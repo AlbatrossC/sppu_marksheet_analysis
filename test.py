@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 import os
 
 # Import rectangles from rects.py
-from location.FE.SEM1.sem1_rects import rects1, rects2, rects3, rects4, rects5, rects6, rects7, rects8, rects9, rects10, rects11, rects12, rects13
+from location.FE.SEM2.sem2_rects import rects1, rects2, rects3, rects4, rects5, rects6, rects7, rects8, rects9, rects10, rects11, rects12, rects13,rects14,rects15
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -67,7 +67,7 @@ def upload_file():
             page = doc.load_page(0)
 
             subjects = []
-            for i in range(1, 13):
+            for i in range(1, 14):
                 rect = globals().get(f"rects{i}", {})
                 subject = Subject(
                     code=extract_text(page, rect.get(f"code{i}", {})),
@@ -80,7 +80,7 @@ def upload_file():
                 )
                 subjects.append(subject)
 
-            info_rect = rects13
+            info_rect = rects15
             info = AdditionalInfo(
                 SGPA=extract_text(page, info_rect.get("SGPA", {})),
                 cred_earned=extract_text(page, info_rect.get("cred_earned", {})),
