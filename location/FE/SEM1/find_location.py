@@ -3,7 +3,7 @@
 import fitz  # PyMuPDF
 
 # Path to the PDF file
-pdf_path = "location\location.pdf"
+pdf_path = "location\FE\SEM1\sem1_location.pdf"
 
 # Open the PDF document
 pdf_document = fitz.open(pdf_path)
