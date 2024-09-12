@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Semester</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        function updateSemesterOptions() {
+            var year = document.getElementById("yearSelect").value;
+            var semesterSelect = document.getElementById("semesterSelect");
+            var link = document.getElementById("resultLink");
+            
+            var semesters = {
+                FE: ["Sem1", "Sem2"],
+                SE: ["Sem3", "Sem4"],
+                TE: ["Sem5", "Sem6"],
+                BE: ["Sem7", "Sem8"]
+            };
+            
+            var options = semesters[year] || [];
+            
+            semesterSelect.innerHTML = "<option value=''>Select Semester</option>";
+            options.forEach(function(sem) {
+                var option = document.createElement("option");
+                option.value = sem;
+                option.textContent = sem;
+                semesterSelect.appendChild(option);
+            });
+            
+            // Clear the link when changing year
+            link.href = "#";
+            link.textContent = "";
+        }
+        
+        function updateLink() {
+            var year = document.getElementById("yearSelect").value;
+            var semester = document.getElementById("semesterSelect").value;
+            var link = document.getElementById("resultLink");
+            
+            if (year && semester) {
+                // Special handling for FE semesters
+                if (year === "FE") {
+                    link.href = "/" + semester.toLowerCase();
+                } else {
+                    link.href = "/" + year.toLowerCase() + "_" + semester.toLowerCase();
+                }
+                link.textContent = "Go to " + year + " " + semester + " Route";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Semester for PDF Processing</h1>
+        <form>
+            <label for="yearSelect">Select Year:</label>
+            <select id="yearSelect" onchange="updateSemesterOptions()">
+                <option value="">Select Year</option>
+                <option value="FE">FE</option>
+                <option value="SE">SE</option>
+                <option value="TE">TE</option>
+                <option value="BE">BE</option>
+            </select>
+            
+            <label for="semesterSelect">Select Semester:</label>
+            <select id="semesterSelect" onchange="updateLink()">
+                <option value="">Select Semester</option>
+            </select>
+        </form>
+        
+        <div class="result">
+            <a id="resultLink" href="#" class="button">Select an option</a>
+        </div>
+    </div>
+</body>
+</html>

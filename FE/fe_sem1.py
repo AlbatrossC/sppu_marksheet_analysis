@@ -1,21 +1,24 @@
-from flask import Flask, request, render_template
-import fitz
+from flask import request, render_template, redirect, url_for
+import fitz  # PyMuPDF for PDF handling
 from werkzeug.utils import secure_filename
 import os
 
-# Import rectangles from rects.py
-from location.FE.SEM2.sem2_rects import rects1, rects2, rects3, rects4, rects5, rects6, rects7, rects8, rects9, rects10, rects11, rects12, rects13, rects14, rects15
+# Import rectangles from rects.py (these need to exist in your project)
+from location.FE.SEM1.sem1_rects import rects1, rects2, rects3, rects4, rects5, rects6, rects7, rects8, rects9, rects10, rects11, rects12, rects13
 
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
+# Define your upload folder and allowed extensions (pdf)
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'pdf'}
 
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
+# Ensure the upload folder exists
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
+# Function to check if the file is allowed
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# Class for holding subject data
 class Subject:
     def __init__(self, code, name, credits='', earned='', grade='', grade_point='', points=''):
         self.code = code
@@ -31,8 +34,9 @@ class Subject:
         try:
             return float(value)
         except ValueError:
-            return ''  # Return blank if the value can't be converted to float
+            return ''  # Return blank if conversion fails
 
+# Class for additional information (like SGPA)
 class AdditionalInfo:
     def __init__(self, SGPA='', cred_earned='', total_cred='', total_credit_pt=''):
         self.SGPA = self.convert_to_float(SGPA)
@@ -45,8 +49,9 @@ class AdditionalInfo:
         try:
             return float(value)
         except ValueError:
-            return ''  # Return blank if the value can't be converted to float
+            return ''  # Return blank if conversion fails
 
+# Function to extract text from a rectangle on the PDF page
 def extract_text(page, rect):
     try:
         return page.get_text("text", clip=rect).strip()
@@ -54,20 +59,21 @@ def extract_text(page, rect):
         print(f"Error extracting text: {e}")
         return ''
 
-@app.route('/', methods=['GET', 'POST'])
+# Main function to handle file uploads for Semester 1
 def upload_file():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(file_path)
 
+            # Open and process the PDF
             doc = fitz.open(file_path)
             page = doc.load_page(0)
 
             subjects = []
-            for i in range(1, 15):
+            for i in range(1, 13):  # Assuming you have 12 subjects
                 rect = globals().get(f"rects{i}", {})
                 subject = Subject(
                     code=extract_text(page, rect.get(f"code{i}", {})),
@@ -80,7 +86,8 @@ def upload_file():
                 )
                 subjects.append(subject)
 
-            info_rect = rects15
+            # Extract additional information like SGPA
+            info_rect = rects13  # Assuming you have additional info in rects13
             info = AdditionalInfo(
                 SGPA=extract_text(page, info_rect.get("SGPA", {})),
                 cred_earned=extract_text(page, info_rect.get("cred_earned", {})),
@@ -90,9 +97,7 @@ def upload_file():
 
             doc.close()
 
+            # Render the result template and pass the subjects and additional info
             return render_template('FE/results.html', info=info, subjects=subjects)
 
-    return render_template('upload.html')
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    return render_template('upload_sem1.html')

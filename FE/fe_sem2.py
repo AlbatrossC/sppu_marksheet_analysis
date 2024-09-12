@@ -1,22 +1,24 @@
-from flask import Flask, request, render_template, redirect, url_for
-import fitz
+from flask import request, render_template
+import fitz  # PyMuPDF for PDF handling
 from werkzeug.utils import secure_filename
 import os
 
-# Import rectangles from rects.py
-from location.FE.SEM1.sem1_rects import rects1, rects2, rects3, rects4, rects5, rects6, rects7, rects8, rects9, rects10, rects11, rects12, rects13
+# Import rectangles from rects.py for SEM2
+from location.FE.SEM2.sem2_rects import rects1, rects2, rects3, rects4, rects5, rects6, rects7, rects8, rects9, rects10, rects11, rects12, rects13, rects14, rects15
 
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
+# Define your upload folder and allowed extensions (pdf)
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'pdf'}
 
-# Create upload folder if it doesn't exist
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
+# Ensure the upload folder exists
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
+# Function to check if the file is allowed
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# Class for holding subject data
 class Subject:
     def __init__(self, code, name, credits='', earned='', grade='', grade_point='', points=''):
         self.code = code
@@ -32,22 +34,9 @@ class Subject:
         try:
             return float(value)
         except ValueError:
-            # Return empty string if conversion fails instead of 0.0
-            return ''
+            return ''  # Return blank if conversion fails
 
-    def __repr__(self):
-        return (
-            f"Subject(\n"
-            f"code={self.code}, \n"
-            f"name={self.name}, \n"
-            f"credits={self.credits if self.credits else 'N/A'}, \n"
-            f"earned={self.earned if self.earned else 'N/A'}, \n"
-            f"grade={self.grade if self.grade else 'N/A'}, \n"
-            f"grade_point={self.grade_point if self.grade_point else 'N/A'}, \n"
-            f"points={self.points if self.points else 'N/A'}\n"
-            f")"
-        )
-
+# Class for additional information (like SGPA)
 class AdditionalInfo:
     def __init__(self, SGPA='', cred_earned='', total_cred='', total_credit_pt=''):
         self.SGPA = self.convert_to_float(SGPA)
@@ -60,10 +49,9 @@ class AdditionalInfo:
         try:
             return float(value)
         except ValueError:
-            # Return empty string if conversion fails
-            return ''
+            return ''  # Return blank if conversion fails
 
-# Function to extract text from a rectangle
+# Function to extract text from a rectangle on the PDF page
 def extract_text(page, rect):
     try:
         return page.get_text("text", clip=rect).strip()
@@ -71,22 +59,21 @@ def extract_text(page, rect):
         print(f"Error extracting text: {e}")
         return ''
 
-# Route for uploading the PDF file
-@app.route('/', methods=['GET', 'POST'])
+# Main function to handle file uploads for Semester 2
 def upload_file():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(file_path)
 
-            # Process the PDF file
+            # Open and process the PDF
             doc = fitz.open(file_path)
             page = doc.load_page(0)
 
             subjects = []
-            for i in range(1, 13):
+            for i in range(1, 15):  # Assuming you have 15 subjects for SEM2
                 rect = globals().get(f"rects{i}", {})
                 subject = Subject(
                     code=extract_text(page, rect.get(f"code{i}", {})),
@@ -99,8 +86,8 @@ def upload_file():
                 )
                 subjects.append(subject)
 
-            # Extract AdditionalInfo
-            info_rect = rects13
+            # Extract additional information like SGPA
+            info_rect = rects15  # Assuming rects15 contains additional info
             info = AdditionalInfo(
                 SGPA=extract_text(page, info_rect.get("SGPA", {})),
                 cred_earned=extract_text(page, info_rect.get("cred_earned", {})),
@@ -110,9 +97,7 @@ def upload_file():
 
             doc.close()
 
+            # Render the result template and pass the subjects and additional info
             return render_template('FE/results.html', info=info, subjects=subjects)
 
-    return render_template('upload.html')
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    return render_template('upload_sem2.html')
