@@ -32,7 +32,8 @@ class Subject:
         try:
             return float(value)
         except ValueError:
-            return 0.0
+            # Return empty string if conversion fails instead of 0.0
+            return ''
 
     def __repr__(self):
         return (
@@ -59,7 +60,8 @@ class AdditionalInfo:
         try:
             return float(value)
         except ValueError:
-            return 0.0
+            # Return empty string if conversion fails
+            return ''
 
 # Function to extract text from a rectangle
 def extract_text(page, rect):
@@ -109,8 +111,6 @@ def upload_file():
             doc.close()
 
             return render_template('FE/results.html', info=info, subjects=subjects)
-
-
 
     return render_template('upload.html')
 
