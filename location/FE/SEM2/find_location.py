@@ -5,7 +5,7 @@
 import fitz  
 
 # Path to the PDF file
-pdf_path = "location\FE\SEM2\sem2_location.pdf"
+pdf_path = "uploads\FEsem1sem2.pdf"
 
 # Open the PDF document
 pdf_document = fitz.open(pdf_path)
@@ -134,10 +134,10 @@ subject_details = {
     "grd14": "L3",
 
     #other
-    "SGPA":"X.XX",
-    "cred_earned": "VV",
-    "total_cred" : "NN",
-    "total_credit_pt" : "YYY",
+    "SGPA":"7.09",
+    "cred_earned": "22",
+    "total_cred" : "22",
+    "total_credit_pt" : "156",
 
 }
 

@@ -67,7 +67,7 @@ def upload_file():
             page = doc.load_page(0)
 
             subjects = []
-            for i in range(1, 14):
+            for i in range(1, 15):
                 rect = globals().get(f"rects{i}", {})
                 subject = Subject(
                     code=extract_text(page, rect.get(f"code{i}", {})),
