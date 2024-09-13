@@ -6,11 +6,11 @@ import os
 # Import rectangles from rects.py for SEM2
 from location.FE.SEM2.sem2_rects import rects1, rects2, rects3, rects4, rects5, rects6, rects7, rects8, rects9, rects10, rects11, rects12, rects13, rects14, rects15
 
-# Define your upload folder and allowed extensions (pdf)
-UPLOAD_FOLDER = 'uploads'
+# Use /tmp directory on Vercel for uploads
+UPLOAD_FOLDER = '/tmp/uploads'
 ALLOWED_EXTENSIONS = {'pdf'}
 
-# Ensure the upload folder exists
+# Ensure the upload folder exists in /tmp
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 

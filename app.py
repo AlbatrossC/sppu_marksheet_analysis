@@ -4,10 +4,12 @@ from FE.fe_sem1 import upload_file as sem1_upload
 from FE.fe_sem2 import upload_file as sem2_upload
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
+
+# Use /tmp directory on Vercel for uploads
+app.config['UPLOAD_FOLDER'] = '/tmp/uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
 
-# Create upload folder if it doesn't exist
+# Create upload folder in /tmp if it doesn't exist
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
@@ -26,15 +28,12 @@ def run_sem1():
         return sem1_upload()  # Call the function from fe_sem1.py
     return render_template('FE/upload_sem1.html')
 
-
-
 # Route to handle SEM2 PDF processing
 @app.route('/sem2', methods=['GET', 'POST'])
 def run_sem2():
     if request.method == 'POST':
         return sem2_upload()  # Call the function from fe_sem2.py
     return render_template('FE/upload_sem2.html')
-
 
 if __name__ == '__main__':
     app.run(debug=True)
