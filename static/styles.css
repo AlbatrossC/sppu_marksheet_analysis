@@ -1,57 +1,49 @@
-/* styles.css */
-
 /* Basic Reset */
-body, h1, form, select, a {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body Styling */
 body {
     font-family: Arial, sans-serif;
-    line-height: 1.6;
     background-color: #f4f4f4;
+    color: #333;
+    padding: 20px;
 }
 
-/* Container Styling */
 .container {
     max-width: 600px;
-    margin: 20px auto;
+    margin: 0 auto;
+    background-color: #fff;
     padding: 20px;
-    background: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Heading Styling */
 h1 {
     text-align: center;
-    color: #333;
     margin-bottom: 20px;
 }
 
-/* Form Styling */
 form {
-    display: flex;
-    flex-direction: column;
+    margin-bottom: 20px;
 }
 
-/* Label Styling */
 label {
-    margin-bottom: 5px;
+    display: block;
+    margin-bottom: 8px;
     font-weight: bold;
 }
 
-/* Select Styling */
 select {
+    width: 100%;
     padding: 10px;
     margin-bottom: 20px;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-/* Result Link Styling */
 .result {
     text-align: center;
 }
@@ -59,14 +51,18 @@ select {
 .button {
     display: inline-block;
     padding: 10px 20px;
-    font-size: 16px;
-    color: #fff;
     background-color: #007bff;
+    color: #fff;
     text-decoration: none;
     border-radius: 4px;
-    transition: background-color 0.3s ease;
+    font-size: 16px;
 }
 
 .button:hover {
     background-color: #0056b3;
+}
+
+.button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
 }
