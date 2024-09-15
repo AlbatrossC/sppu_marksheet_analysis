@@ -64,6 +64,56 @@ a:hover {
     background-color: #45a049;
 }
 
+/* Backlog box styling */
+.backlog-box {
+    border: 2px solid red;
+    padding: 15px;
+    margin-bottom: 20px;
+    font-family: 'Arial', sans-serif;
+    background-color: #fff;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3); /* 3D shadow effect */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    animation: appear 1s ease-in-out forwards;
+    animation-delay: 0.5s; /* Delay for Backlog box */
+    opacity: 0; /* Start hidden */
+}
+
+.backlog-box:hover {
+    transform: translateY(-5px); /* Slight upward movement on hover */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4); /* Deeper shadow on hover */
+}
+
+/* Grace box styling */
+.grace-box {
+    border: 2px solid blue;
+    padding: 15px;
+    margin-bottom: 20px;
+    font-family: 'Arial', sans-serif;
+    background-color: #fff;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3); /* 3D shadow effect */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    animation: appear 1s ease-in-out forwards;
+    animation-delay: 1s; /* Delay for Grace box */
+    opacity: 0; /* Start hidden */
+}
+
+.grace-box:hover {
+    transform: translateY(-5px); /* Slight upward movement on hover */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4); /* Deeper shadow on hover */
+}
+
+/* Animation for appearance */
+@keyframes appear {
+    0% {
+        opacity: 0;
+        transform: translateY(20px); /* Start position slightly below */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0); /* End at original position */
+    }
+}
+
 /* Grace message */
 .grace-message {
     color: #FF0000;

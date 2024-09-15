@@ -7,9 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analysis</title>
 
-    <p>{{ backlog_message }}</p>
-    <p>{{ grace_message }}</p>
-
     <style>
         table {
             width: 100%;
@@ -29,7 +26,7 @@
 </head>
 <body>
     <h1>Extracted Information</h1>
-    
+
     <h2>Additional Info</h2>
     <table>
         <tr>
@@ -49,6 +46,18 @@
             <td>{{ info.total_credit_pt }}</td>
         </tr>
     </table>
+
+    
+    <div class="backlog-box">
+        <h3>Backlog Status</h3>
+        <p>{{ backlog_message }}</p>
+    </div>
+
+    
+    <div class="grace-box">
+        <h3>Grace Marks Applied</h3>
+        <p>{{ grace_message }}</p>
+    </div>
 
     <h2>Subjects</h2>
     <table>
@@ -77,8 +86,6 @@
             {% endfor %}
         </tbody>
     </table>
-
-    
 
     <h2>Grade Points Table</h2>
     <table>
