@@ -2,9 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='results_styles.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analysis</title>
+
+    <p>{{ backlog_message }}</p>
+    <p>{{ grace_message }}</p>
+
     <style>
         table {
             width: 100%;
@@ -70,6 +75,76 @@
                 <td>{{ subject.points }}</td>
             </tr>
             {% endfor %}
+        </tbody>
+    </table>
+
+    
+
+    <h2>Grade Points Table</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Marks Range</th>
+                <th>Grade</th>
+                <th>Description</th>
+                <th>Grade Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>80-100</td>
+                <td>O</td>
+                <td>Outstanding</td>
+                <td>10</td>
+            </tr>
+            <tr>
+                <td>70-79</td>
+                <td>A+</td>
+                <td>Excellent</td>
+                <td>9</td>
+            </tr>
+            <tr>
+                <td>60-69</td>
+                <td>A</td>
+                <td>Very Good</td>
+                <td>8</td>
+            </tr>
+            <tr>
+                <td>55-59</td>
+                <td>B+</td>
+                <td>Good</td>
+                <td>7</td>
+            </tr>
+            <tr>
+                <td>50-54</td>
+                <td>B</td>
+                <td>Above Average</td>
+                <td>6</td>
+            </tr>
+            <tr>
+                <td>45-49</td>
+                <td>C</td>
+                <td>Average</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>40-44</td>
+                <td>P</td>
+                <td>Pass</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>0-39</td>
+                <td>F</td>
+                <td>Fail</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>-</td>
+                <td>Ab</td>
+                <td>Absent</td>
+                <td>0</td>
+            </tr>
         </tbody>
     </table>
 

@@ -59,6 +59,22 @@ def extract_text(page, rect):
         print(f"Error extracting text: {e}")
         return ''
 
+# Function to count backlogs based on grades
+def count_backlogs(subjects):
+    backlogs = 0
+    for subject in subjects:
+        if subject.grade == 'F':  # Checking if grade is 'F'
+            backlogs += 1
+    return backlogs
+
+# Function to check if any subject has grace marks based on '#' symbol in points
+def count_grace_marks(subjects):
+    grace_count = 0
+    for subject in subjects:
+        if '#' in subject.points:  # Checking for the '#' symbol in points
+            grace_count += 1
+    return grace_count
+
 # Main function to handle file uploads for Semester 1
 def upload_file():
     if request.method == 'POST':
@@ -97,7 +113,15 @@ def upload_file():
 
             doc.close()
 
-            # Render the result template and pass the subjects and additional info
-            return render_template('FE/results.html', info=info, subjects=subjects)
+            # Calculate the number of backlogs
+            backlogs = count_backlogs(subjects)
+            backlog_message = f"You have {backlogs} backlogs" if backlogs > 0 else "You have 0 backlogs"
+
+            # Calculate the number of subjects with grace marks
+            grace_count = count_grace_marks(subjects)
+            grace_message = f"You have given grace marks in {grace_count} subjects. Grace marks are awarded to help you pass subjects with marginally lower scores."
+
+            # Render the result template and pass the subjects, additional info, backlog message, and grace message
+            return render_template('FE/results.html', info=info, subjects=subjects, backlog_message=backlog_message, grace_message=grace_message)
 
     return render_template('upload_sem1.html')
