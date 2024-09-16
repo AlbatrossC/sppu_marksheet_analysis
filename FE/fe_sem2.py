@@ -23,33 +23,33 @@ class Subject:
     def __init__(self, code, name, credits='', earned='', grade='', grade_point='', points=''):
         self.code = code
         self.name = name
-        self.credits = self.convert_to_float(credits)
-        self.earned = self.convert_to_float(earned)
+        self.credits = self.convert_to_int(credits)
+        self.earned = self.convert_to_int(earned)
         self.grade = grade
-        self.grade_point = self.convert_to_float(grade_point)
-        self.points = points
+        self.grade_point = self.convert_to_int(grade_point)
+        self.points = points  # Keep points as is
 
     @staticmethod
-    def convert_to_float(value):
+    def convert_to_int(value):
         try:
-            return float(value)
+            return int(value)
         except ValueError:
-            return ''  # Return blank if conversion fails
+            return 0  # Return 0 if conversion fails
 
 # Class for additional information (like SGPA)
 class AdditionalInfo:
     def __init__(self, SGPA='', cred_earned='', total_cred='', total_credit_pt=''):
-        self.SGPA = self.convert_to_float(SGPA)
-        self.cred_earned = self.convert_to_float(cred_earned)
-        self.total_cred = self.convert_to_float(total_cred)
-        self.total_credit_pt = self.convert_to_float(total_credit_pt)
+        self.SGPA = SGPA  # Keep SGPA as it is (string or float)
+        self.cred_earned = self.convert_to_int(cred_earned)
+        self.total_cred = self.convert_to_int(total_cred)
+        self.total_credit_pt = self.convert_to_int(total_credit_pt)
 
     @staticmethod
-    def convert_to_float(value):
+    def convert_to_int(value):
         try:
-            return float(value)
+            return int(value)
         except ValueError:
-            return ''  # Return blank if conversion fails
+            return 0 # Return 0 if conversion fails
 
 # Function to extract text from a rectangle on the PDF page
 def extract_text(page, rect):
@@ -71,9 +71,14 @@ def count_backlogs(subjects):
 def count_grace_marks(subjects):
     grace_count = 0
     for subject in subjects:
-        if '#' in subject.points:  # Checking for the '#' symbol in points
+        if '#' in str(subject.points):  # Checking for the '#' symbol in points
             grace_count += 1
     return grace_count
+
+# Function to calculate the total earned credits
+def calculate_total_earned_credits(subjects):
+    total_earned_credits = sum(subject.earned for subject in subjects)
+    return total_earned_credits
 
 # Main function to handle file uploads for Semester 2
 def upload_file():
@@ -89,7 +94,7 @@ def upload_file():
             page = doc.load_page(0)
 
             subjects = []
-            for i in range(1, 16):  # Assuming you have 15 subjects for SEM2
+            for i in range(1, 15):  # Assuming you have 15 subjects for SEM2
                 rect = globals().get(f"rects{i}", {})
                 subject = Subject(
                     code=extract_text(page, rect.get(f"code{i}", {})),
@@ -98,7 +103,7 @@ def upload_file():
                     earned=extract_text(page, rect.get(f"earned{i}", {})),
                     grade=extract_text(page, rect.get(f"grd{i}", {})),
                     grade_point=extract_text(page, rect.get(f"gp{i}", {})),
-                    points=extract_text(page, rect.get(f"pnt{i}", {}))
+                    points=extract_text(page, rect.get(f"pnt{i}", {}))  # Keep points as is
                 )
                 subjects.append(subject)
 
@@ -121,7 +126,10 @@ def upload_file():
             grace_count = count_grace_marks(subjects)
             grace_message = f"You have given grace marks in {grace_count} subjects. Grace marks are awarded to help you pass subjects with marginally lower scores."
 
+            # Calculate the total earned credits
+            total_earned_credits = calculate_total_earned_credits(subjects)
+
             # Render the result template and pass the subjects, additional info, backlog message, and grace message
-            return render_template('FE/results.html', info=info, subjects=subjects, backlog_message=backlog_message, grace_message=grace_message)
+            return render_template('FE/results.html', info=info, subjects=subjects, backlog_message=backlog_message, grace_message=grace_message, total_earned_credits=total_earned_credits)
 
     return render_template('upload_sem2.html')

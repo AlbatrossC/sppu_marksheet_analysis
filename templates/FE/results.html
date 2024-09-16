@@ -22,6 +22,18 @@
         th {
             background-color: #f2f2f2;
         }
+        .backlog-box, .grace-box {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .backlog-box {
+            background-color: #f9f9f9;
+        }
+        .grace-box {
+            background-color: #e9f9e9;
+        }
     </style>
 </head>
 <body>
@@ -47,13 +59,11 @@
         </tr>
     </table>
 
-    
     <div class="backlog-box">
         <h3>Backlog Status</h3>
         <p>{{ backlog_message }}</p>
     </div>
 
-    
     <div class="grace-box">
         <h3>Grace Marks Applied</h3>
         <p>{{ grace_message }}</p>
@@ -63,27 +73,62 @@
     <table>
         <thead>
             <tr>
-                <th>Code</th>
-                <th>Name</th>
+                <th>Subject Name</th>
                 <th>Credits</th>
-                <th>Earned</th>
                 <th>Grade</th>
-                <th>Grade Point</th>
-                <th>Points</th>
+                <th>Grade × Credits Earned</th>
+                <th>Marks Range</th>
             </tr>
         </thead>
         <tbody>
             {% for subject in subjects %}
             <tr>
-                <td>{{ subject.code }}</td>
                 <td>{{ subject.name }}</td>
                 <td>{{ subject.credits }}</td>
-                <td>{{ subject.earned }}</td>
                 <td>{{ subject.grade }}</td>
-                <td>{{ subject.grade_point }}</td>
-                <td>{{ subject.points }}</td>
+                {% if subject.grade != 'AC' %}
+                    <td>
+                        {% if subject.grade_point and subject.earned %}
+                            {{ subject.earned }} × {{ subject.grade_point }} = <strong>{{ (subject.grade_point | float * subject.earned | float) | int }}</strong>
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if subject.grade == 'O' %}
+                            80-100
+                        {% elif subject.grade == 'A+' %}
+                            70-79
+                        {% elif subject.grade == 'A' %}
+                            60-69
+                        {% elif subject.grade == 'B+' %}
+                            55-59
+                        {% elif subject.grade == 'B' %}
+                            50-54
+                        {% elif subject.grade == 'C' %}
+                            45-49
+                        {% elif subject.grade == 'P' %}
+                            40-44
+                        {% elif subject.grade == 'F' %}
+                            0-39
+                        {% else %}
+                            Absent
+                        {% endif %}
+                    </td>
+                {% else %}
+                    <td></td> <!-- Placeholder for "Grade × Credits Earned" -->
+                    <td></td> <!-- Placeholder for "Marks Range" -->
+                {% endif %}
             </tr>
             {% endfor %}
+            <!-- New row added here -->
+            <tr>
+                <td><strong>Total</strong></td>
+                <td><strong>{{ total_earned_credits }}</strong></td>
+                <td></td>
+                <td><strong>{{ info.total_credit_pt }}</strong></td>
+                <td></td>
+            </tr>
         </tbody>
     </table>
 
