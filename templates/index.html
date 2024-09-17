@@ -52,14 +52,14 @@
                 } else {
                     link.href = "/" + year.toLowerCase() + "_" + semester.toLowerCase();
                 }
-                link.textContent = "Go to " + year + " " + semester + " Route";
+                link.textContent = "Go to Upload your " + year + " " + semester + " Marksheet";
             }
         }
     </script>
 </head>
 <body>
     <div class="container">
-        <h1>Select Semester for PDF Processing</h1>
+        <h1>Select Year & Semester for your Sppu Marksheet Analysis</h1>
         <form>
             <label for="yearSelect">Select Year:</label>
             <select id="yearSelect" onchange="updateSemesterOptions()">
@@ -77,7 +77,7 @@
         </form>
         
         <div class="result">
-            <a id="resultLink" href="#" class="button">Select an option</a>
+            <a id="resultLink" href="#" class="button">Select the option</a>
         </div>
     </div>
 </body>
