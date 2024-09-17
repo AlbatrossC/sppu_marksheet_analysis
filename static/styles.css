@@ -66,3 +66,39 @@ select {
     background-color: #6c757d;
     cursor: not-allowed;
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+table, th, td {
+    border: 1px solid black;
+}
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+th {
+    background-color: #f2f2f2;
+}
+.backlog-box, .grace-box {
+    margin: 20px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.backlog-box {
+    background-color: #f9f9f9;
+}
+.grace-box {
+    background-color: #e9f9e9;
+}
+.f-grade-row {
+    background-color: rgb(241, 81, 81); /* Light red */
+}
+.f-grade-row:hover {
+    background-color: #f5120a; /* Dark red */
+    color: #fff; /* White text for better contrast */
+}
+
+

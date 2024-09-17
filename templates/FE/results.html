@@ -35,7 +35,11 @@
             background-color: #e9f9e9;
         }
         .f-grade-row {
-            background-color: #fdd;
+            background-color: #fdd; /* Light red */
+        }
+        .f-grade-row:hover {
+            background-color: #d9534f; /* Dark red */
+            color: #fff; /* White text for better contrast */
         }
     </style>
 </head>
@@ -98,24 +102,15 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if subject.grade == 'O' %}
-                            80-100
-                        {% elif subject.grade == 'A+' %}
-                            70-79
-                        {% elif subject.grade == 'A' %}
-                            60-69
-                        {% elif subject.grade == 'B+' %}
-                            55-59
-                        {% elif subject.grade == 'B' %}
-                            50-54
-                        {% elif subject.grade == 'C' %}
-                            45-49
-                        {% elif subject.grade == 'P' %}
-                            40-44
-                        {% elif subject.grade == 'F' %}
-                            0-39
-                        {% else %}
-                            Absent
+                        {% if subject.grade == 'O' %} 80-100
+                        {% elif subject.grade == 'A+' %} 70-79
+                        {% elif subject.grade == 'A' %} 60-69
+                        {% elif subject.grade == 'B+' %} 55-59
+                        {% elif subject.grade == 'B' %} 50-54
+                        {% elif subject.grade == 'C' %} 45-49
+                        {% elif subject.grade == 'P' %} 40-44
+                        {% elif subject.grade == 'F' %} 0-39
+                        {% else %} Absent
                         {% endif %}
                     </td>
                 {% else %}
