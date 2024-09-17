@@ -11,7 +11,7 @@ from location.FE.Both.both_rects import (
 )
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['UPLOAD_FOLDER'] = '/tmp/uploads'  
 app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
 
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
