@@ -6,18 +6,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marksheet Analyzer</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script>
         function updateSemesterOptions() {
             var year = document.getElementById("yearSelect").value;
             var semesterSelect = document.getElementById("semesterSelect");
             var link = document.getElementById("resultLink");
             
+            // Updated semesters with "Sem1 & Sem2" option for all years
             var semesters = {
-                FE: ["Sem1", "Sem2"],
-                SE: ["Sem3", "Sem4"],
-                TE: ["Sem5", "Sem6"],
-                BE: ["Sem7", "Sem8"]
+                FE: ["Sem1", "Sem2", "Sem1 & Sem2"],
+                SE: ["Sem3", "Sem4", "Sem3 & Sem4"],
+                TE: ["Sem5", "Sem6", "Sem5 & Sem6"],
+                BE: ["Sem7", "Sem8", "Sem7 & Sem8"]
             };
             
             var options = semesters[year] || [];
@@ -41,8 +41,13 @@
             var link = document.getElementById("resultLink");
             
             if (year && semester) {
-                // Special handling for FE semesters
-                if (year === "FE") {
+                // Handle the combined semesters differently
+                if (semester.includes("&")) {
+                    // Convert "Sem1 & Sem2" to "sem1_sem2"
+                    var formattedSemester = semester.replace(" & ", "_").toLowerCase();
+                    link.href = "/" + year.toLowerCase() + "_" + formattedSemester;
+                } else if (year === "FE") {
+                    // Special handling for FE semesters
                     link.href = "/" + semester.toLowerCase();
                 } else {
                     link.href = "/" + year.toLowerCase() + "_" + semester.toLowerCase();

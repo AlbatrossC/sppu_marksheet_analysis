@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FE SEM-1 & SEM-2</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Upload FE Semester 1 & Semester 2 Marksheet</h1>
+        <form action="/fe_sem1_sem2" method="POST" enctype="multipart/form-data">
+            <label for="file">Choose PDF file:</label>
+            <input type="file" name="file" id="file" accept="application/pdf" required>
+            <button type="submit" class="button">Upload and Process</button>
+        </form>
+    </div>
+</body>
+</html>

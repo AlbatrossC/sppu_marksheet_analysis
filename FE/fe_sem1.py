@@ -20,7 +20,7 @@ def allowed_file(filename):
 
 # Class for holding subject data
 class Subject:
-    GRADE_POINTS = {'A': 4, 'B': 3, 'C': 2, 'F': 0}  # Example grade to points mapping
+    
 
     def __init__(self, code, name, credits='', earned='', grade='', grade_point='', points=''):
         self.code = code

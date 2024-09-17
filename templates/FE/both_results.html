@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='results_styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis</title>
+
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .backlog-box, .grace-box {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .backlog-box {
+            background-color: #f9f9f9;
+        }
+        .grace-box {
+            background-color: #e9f9e9;
+        }
+        .f-grade-row {
+            background-color: #fdd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Extracted Information</h1>
+
+    <h2>Additional Information - Semester 1</h2>
+    <table>
+        <tr>
+            <th>SGPA</th>
+            <td>{{ info_sem1.SGPA }}</td>
+        </tr>
+        <tr>
+            <th>Credits Earned</th>
+            <td>{{ total_sem1_earned }}</td>
+        </tr>
+        <tr>
+            <th>Total Credits</th>
+            <td>{{ total_sem1_credits }}</td>
+        </tr>
+        <tr>
+            <th>Total Credit Points</th>
+            <td>{{ total_sem1_points }}</td>
+        </tr>
+    </table>
+
+    <div class="backlog-box">
+        <h3>Backlog Status - Semester 1</h3>
+        {% if backlogs_sem1 > 0 %}
+            <p>You have backlogs in {{ backlogs_sem1 }} subject(s) in Semester 1.</p>
+        {% else %}
+            <p>No backlogs in Semester 1.</p>
+        {% endif %}
+    </div>
+
+    <div class="grace-box">
+        <h3>Grace Marks Applied - Semester 1</h3>
+        {% if grace_marks_sem1 > 0 %}
+            <p>You have grace marks in {{ grace_marks_sem1 }} subject(s) in Semester 1.</p>
+        {% else %}
+            <p>No grace marks in Semester 1.</p>
+        {% endif %}
+    </div>
+
+    <h2>Semester 1 Subjects</h2>
+    <table>
+        <thead>
+            <tr>
+                <!--<th>Code</th>-->
+                <th>Name</th>
+                <th>Credits</th>
+                <th>Grade (Grade Point) Earned</th>
+                <th>Earned</th>
+                <th>Grade Point</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subject in sem1_subjects %}
+            <tr class="{% if subject.grade == 'F' %}f-grade-row{% endif %}">
+                <!--<td>{{ subject.code }}</td> -->
+                <td>{{ subject.name }}</td>
+                <td>{{ subject.credits }}</td>
+                <td>{{ subject.grade }} = {{ subject.grade_point }}</td>
+                <td>{{subject.earned}}</td>
+                <td>{{subject.earned}} × {{subject.grade_point}} = {{ subject.earned * subject.grade_point }}</td>
+                <td>{{ subject.points }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td><strong>Total</strong></td>
+                <td><strong>{{ total_sem1_credits }}</strong></td>
+                <td></td>
+                <td><strong>{{ total_sem1_earned }}</strong></td>
+                <td></td>
+                <td><strong>{{ total_sem1_points }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Additional Information - Semester 2</h2>
+    <table>
+        <tr>
+            <th>SGPA</th>
+            <td>{{ info_sem2.SGPA }}</td>
+        </tr>
+        <tr>
+            <th>Credits Earned</th>
+            <td>{{ total_sem2_earned }}</td>
+        </tr>
+        <tr>
+            <th>Total Credits</th>
+            <td>{{ info_sem2.total_cred }}</td>
+        </tr>
+        <tr>
+            <th>Total Credit Points</th>
+            <td>{{ total_sem2_points }}</td>
+        </tr>
+    </table>
+
+    <div class="backlog-box">
+        <h3>Backlog Status - Semester 2</h3>
+        {% if backlogs_sem2 > 0 %}
+            <p>You have backlogs in {{ backlogs_sem2 }} subject(s) in Semester 2.</p>
+        {% else %}
+            <p>No backlogs in Semester 2.</p>
+        {% endif %}
+    </div>
+
+    <div class="grace-box">
+        <h3>Grace Marks Applied - Semester 2</h3>
+        {% if grace_marks_sem2 > 0 %}
+            <p>You have grace marks in {{ grace_marks_sem2 }} subject(s) in Semester 2.</p>
+        {% else %}
+            <p>No grace marks in Semester 2.</p>
+        {% endif %}
+    </div>
+
+    <h2>Semester 2 Subjects</h2>
+    <table>
+        <thead>
+            <tr>
+                <!--<th>Code</th>-->
+                <th>Name</th>
+                <th>Credits</th>
+                <th>Grade (Grade Point) Earned</th>
+                <th>Earned</th>
+                <th>Grade Point</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subject in sem2_subjects %}
+            <tr class="{% if subject.grade == 'F' %}f-grade-row{% endif %}">
+                <!--<td>{{ subject.code }}</td> -->
+                <td>{{ subject.name }}</td>
+                <td>{{ subject.credits }}</td>
+                <td>{{ subject.grade }} = {{ subject.grade_point }}</td>
+                <td>{{subject.earned}}</td>
+                <td>{{subject.earned}} × {{subject.grade_point}} = {{ subject.earned * subject.grade_point }}</td>
+                <td>{{ subject.points }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td><strong>Total</strong></td>
+                <td><strong>{{ total_sem2_credits }}</strong></td>
+                <td></td>
+                <td><strong>{{ total_sem2_earned }}</strong></td>
+                <td></td>
+                <td><strong>{{ total_sem2_points }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Grading System</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Marks Range</th>
+                <th>Grade</th>
+                <th>Description</th>
+                <th>Grade Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>80-100</td>
+                <td>O</td>
+                <td>Outstanding</td>
+                <td>10</td>
+            </tr>
+            <tr>
+                <td>70-79</td>
+                <td>A+</td>
+                <td>Excellent</td>
+                <td>9</td>
+            </tr>
+            <tr>
+                <td>60-69</td>
+                <td>A</td>
+                <td>Very Good</td>
+                <td>8</td>
+            </tr>
+            <tr>
+                <td>55-59</td>
+                <td>B+</td>
+                <td>Good</td>
+                <td>7</td>
+            </tr>
+            <tr>
+                <td>50-54</td>
+                <td>B</td>
+                <td>Above Average</td>
+                <td>6</td>
+            </tr>
+            <tr>
+                <td>45-49</td>
+                <td>C</td>
+                <td>Average</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>40-44</td>
+                <td>P</td>
+                <td>Pass</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>0-39</td>
+                <td>F</td>
+                <td>Fail</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>-</td>
+                <td>Ab</td>
+                <td>Absent</td>
+                <td>0</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="/">Upload another file</a>
+</body>
+</html>

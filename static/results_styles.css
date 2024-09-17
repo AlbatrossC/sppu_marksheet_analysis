@@ -120,3 +120,14 @@ a:hover {
     font-weight: bold;
     margin-top: 10px;
 }
+
+/* Existing styles for the F grade row */
+.f-grade-row {
+    background-color: #df6b74; /* Light red background for F grade */
+}
+
+/* New styles to apply when hovering over the F grade row */
+.f-grade-row:hover {
+    background-color: #f14643; /* Dark red background for hover effect */
+}
+
