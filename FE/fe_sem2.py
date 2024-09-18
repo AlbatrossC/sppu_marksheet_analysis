@@ -111,39 +111,43 @@ def process_pdf(file_path):
 
 def upload_file():
     if request.method == 'POST':
-        if 'file' in request.files:
-            file = request.files['file']
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file_path = os.path.join(UPLOAD_FOLDER, filename)
-                file.save(file_path)
-        else:
-            seat_no = request.form['seat_no']
-            mother_name = request.form['mother_name']
-            student_name = f"result_{seat_no}"
+        try:
+            if 'file' in request.files:
+                file = request.files['file']
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file_path = os.path.join(UPLOAD_FOLDER, filename)
+                    file.save(file_path)
+            else:
+                seat_no = request.form['seat_no']
+                mother_name = request.form['mother_name']
+                student_name = f"result_{seat_no}"
 
-            url = 'https://onlineresults.unipune.ac.in/Result/Dashboard/ViewResult1'
-            payload = {
-                'PatternID': '6Qw72CLlcXSacHyT9a7RkQ==',
-                'PatternName': 'RP+zm4rXwFDLUrTpUWU4sEa3GhqzYZU+2WOHorilLYgi2RQ6OKyRcE4pLb5zFaQ9',
-                'SeatNo': seat_no,
-                'MotherName': mother_name
-            }
+                url = 'https://onlineresults.unipune.ac.in/Result/Dashboard/ViewResult1'
+                payload = {
+                    'PatternID': '6Qw72CLlcXSacHyT9a7RkQ==',
+                    'PatternName': 'RP+zm4rXwFDLUrTpUWU4sEa3GhqzYZU+2WOHorilLYgi2RQ6OKyRcE4pLb5zFaQ9',
+                    'SeatNo': seat_no,
+                    'MotherName': mother_name
+                }
 
-            file_path = download_pdf(url, payload, student_name)
-            if not file_path:
-                return "Failed to fetch the marksheet", 400
+                file_path = download_pdf(url, payload, student_name)
+                if not file_path:
+                    return render_template('error.html'), 500
 
-        subjects, info = process_pdf(file_path)
+            subjects, info = process_pdf(file_path)
 
-        backlogs = count_backlogs(subjects)
-        backlog_message = f"You have {backlogs} backlogs" if backlogs > 0 else "You have 0 backlogs"
+            backlogs = count_backlogs(subjects)
+            backlog_message = f"You have {backlogs} backlogs" if backlogs > 0 else "You have 0 backlogs"
 
-        grace_count = count_grace_marks(subjects)
-        grace_message = f"You have given grace marks in {grace_count} subjects. Grace marks are awarded to help you pass subjects with marginally lower scores."
+            grace_count = count_grace_marks(subjects)
+            grace_message = f"You have given grace marks in {grace_count} subjects. Grace marks are awarded to help you pass subjects with marginally lower scores."
 
-        total_earned_credits = calculate_total_earned_credits(subjects)
+            total_earned_credits = calculate_total_earned_credits(subjects)
 
-        return render_template('FE/results.html', info=info, subjects=subjects, backlog_message=backlog_message, grace_message=grace_message, total_earned_credits=total_earned_credits)
+            return render_template('FE/results.html', info=info, subjects=subjects, backlog_message=backlog_message, grace_message=grace_message, total_earned_credits=total_earned_credits)
+        except Exception as e:
+            print(f"Error: {e}")
+            return render_template('error.html'), 500
 
     return render_template('FE/upload_sem2.html')
