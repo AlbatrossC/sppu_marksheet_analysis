@@ -4,7 +4,7 @@
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload FE Semester 1 Marksheet</title>
+    <title>FE Semester 1 Marksheet</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     
     <style>
@@ -66,15 +66,30 @@
 </head>
 <body>
     <div class="container">
-        <h1>Upload FE Semester 1 Marksheet</h1>
+        <h1>FE Semester 1 Marksheet</h1>
+        
+        <h2>Option 1: Upload Your Marksheet</h2>
         <p class="description">
-            Upload your First Year Engineering (FE) Semester 1 marksheet in PDF format for analysis.
-            Ensure the file is a valid PDF of your marksheet before proceeding.
+            Please upload the PDF of your First Year Engineering (FE) Semester 1 marksheet for analysis. Make sure the file is in PDF format and is valid before submitting.
         </p>
         <form action="/sem1" method="POST" enctype="multipart/form-data">
             <label for="file">Choose PDF file:</label>
             <input type="file" name="file" id="file" accept="application/pdf" required>
             <button type="submit" class="button">Upload and Process</button>
+        </form>
+
+        <div class="or-divider">OR</div>
+
+        <h2>Option 2: Fetch and Process Your Marksheet</h2>
+        <p class="description">
+            Enter your seat number and mother's name to fetch and process your marksheet automatically.
+        </p>
+        <form action="/sem1" method="POST">
+            <label for="seat_no">Seat Number:</label>
+            <input type="text" name="seat_no" id="seat_no" required>
+            <label for="mother_name">Mother's Name:</label>
+            <input type="text" name="mother_name" id="mother_name" required>
+            <button type="submit" class="button">Fetch and Process Marksheet</button>
         </form>
     </div>
 </body>

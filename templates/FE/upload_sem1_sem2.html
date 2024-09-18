@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload FE Semester 1 & Semester 2 Marksheet</title>
+    <title>FE Semester 1 & 2 Marksheet</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -122,10 +121,11 @@
 </head>
 <body>
     <div class="container">
-        <h1>Upload FE Marksheet</h1>
+        <h1>FE Semester 1 & 2 Marksheet</h1>
+        
+        <h2>Option 1: Upload Your Marksheet</h2>
         <p class="description">
-            Upload your First Year Engineering (FE) Semester 1 and Semester 2 marksheets for analysis. 
-            Please ensure the PDF file contains marks for both semesters.
+            Please upload the PDF of your First Year Engineering (FE) Semester 1 & 2 combined marksheet for analysis. Make sure the file is in PDF format and is valid before submitting.
         </p>
         <form action="/fe_sem1_sem2" method="POST" enctype="multipart/form-data">
             <div class="file-input-wrapper">
@@ -138,6 +138,20 @@
             <button type="submit" class="button">
                 <i class="fas fa-upload"></i> Upload and Process
             </button>
+        </form>
+
+        <div class="or-divider">OR</div>
+
+        <h2>Option 2: Fetch and Process Your Marksheet</h2>
+        <p class="description">
+            Enter your seat number and mother's name to fetch and process your marksheet automatically.
+        </p>
+        <form action="/fe_sem1_sem2" method="POST">
+            <label for="seat_no">Seat Number:</label>
+            <input type="text" name="seat_no" id="seat_no" required>
+            <label for="mother_name">Mother's Name:</label>
+            <input type="text" name="mother_name" id="mother_name" required>
+            <button type="submit" class="button">Fetch and Process Marksheet</button>
         </form>
     </div>
 
