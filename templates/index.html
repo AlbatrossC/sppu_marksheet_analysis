@@ -5,14 +5,131 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marksheet Analyzer</title>
+    <title>SPPU Marksheet Analyzer</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #45a049;
+            --text-color: #333;
+            --background-color: #f4f4f4;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 90%;
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        p.description {
+            text-align: center;
+            color: var(--text-color);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        label {
+            font-size: 18px;
+            color: var(--text-color);
+            font-weight: bold;
+        }
+
+        select {
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            transition: border-color 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .result {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .button {
+            text-decoration: none;
+            color: white;
+            background-color: var(--primary-color);
+            padding: 15px 30px;
+            border-radius: 10px;
+            display: inline-block;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            select, .button {
+                font-size: 16px;
+            }
+        }
+    </style>
+    
     <script>
         function updateSemesterOptions() {
             var year = document.getElementById("yearSelect").value;
             var semesterSelect = document.getElementById("semesterSelect");
             var link = document.getElementById("resultLink");
             
-            // Updated semesters with "Sem1 & Sem2" option for all years
             var semesters = {
                 FE: ["Sem1", "Sem2", "Sem1 & Sem2"],
                 SE: ["Sem3", "Sem4", "Sem3 & Sem4"],
@@ -30,7 +147,6 @@
                 semesterSelect.appendChild(option);
             });
             
-            // Clear the link when changing year
             link.href = "#";
             link.textContent = "";
         }
@@ -41,25 +157,28 @@
             var link = document.getElementById("resultLink");
             
             if (year && semester) {
-                // Handle the combined semesters differently
                 if (semester.includes("&")) {
-                    // Convert "Sem1 & Sem2" to "sem1_sem2"
                     var formattedSemester = semester.replace(" & ", "_").toLowerCase();
                     link.href = "/" + year.toLowerCase() + "_" + formattedSemester;
                 } else if (year === "FE") {
-                    // Special handling for FE semesters
                     link.href = "/" + semester.toLowerCase();
                 } else {
                     link.href = "/" + year.toLowerCase() + "_" + semester.toLowerCase();
                 }
-                link.textContent = "Go to Upload your " + year + " " + semester + " Marksheet";
+                link.textContent = "Upload your " + year + " " + semester + " Marksheet";
+                link.style.display = "inline-block";
+            } else {
+                link.style.display = "none";
             }
         }
     </script>
 </head>
 <body>
     <div class="container">
-        <h1>Select Year & Semester for your Sppu Marksheet Analysis</h1>
+        <h1>SPPU Marksheet Analyzer</h1>
+        <p class="description">
+            Welcome to the Savitribai Phule Pune University (SPPU) Marksheet Analyzer. This tool helps students upload and analyze their marksheets by selecting their academic year and semester. Get insights into your academic performance with ease!
+        </p>
         <form>
             <label for="yearSelect">Select Year:</label>
             <select id="yearSelect" onchange="updateSemesterOptions()">
@@ -77,7 +196,7 @@
         </form>
         
         <div class="result">
-            <a id="resultLink" href="#" class="button">Select the option</a>
+            <a id="resultLink" href="#" class="button" style="display: none;">Select the option</a>
         </div>
     </div>
 </body>

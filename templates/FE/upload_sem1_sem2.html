@@ -4,17 +4,148 @@
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FE SEM-1 & SEM-2</title>
+    <title>Upload FE Semester 1 & Semester 2 Marksheet</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            max-width: 600px;
+            width: 90%;
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        h1::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background-color: #3498db;
+            margin: 10px auto 0;
+        }
+        p.description {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        .file-input-wrapper input[type="file"] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-input-wrapper .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            text-align: center;
+        }
+        .file-input-wrapper .btn:hover {
+            background-color: #2980b9;
+        }
+        .file-name {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        .button {
+            padding: 12px 20px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            width: 100%;
+        }
+        .button:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        .button:active {
+            transform: translateY(0);
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Upload FE Semester 1 & Semester 2 Marksheet</h1>
+        <h1>Upload FE Marksheet</h1>
+        <p class="description">
+            Upload your First Year Engineering (FE) Semester 1 and Semester 2 marksheets for analysis. 
+            Please ensure the PDF file contains marks for both semesters.
+        </p>
         <form action="/fe_sem1_sem2" method="POST" enctype="multipart/form-data">
-            <label for="file">Choose PDF file:</label>
-            <input type="file" name="file" id="file" accept="application/pdf" required>
-            <button type="submit" class="button">Upload and Process</button>
+            <div class="file-input-wrapper">
+                <button type="button" class="btn">
+                    <i class="fas fa-cloud-upload-alt"></i> Choose PDF file
+                </button>
+                <input type="file" name="file" id="file" accept="application/pdf" required>
+            </div>
+            <div class="file-name" id="file-name"></div>
+            <button type="submit" class="button">
+                <i class="fas fa-upload"></i> Upload and Process
+            </button>
         </form>
     </div>
+
+    <script>
+        document.getElementById('file').addEventListener('change', function(e) {
+            var fileName = e.target.files[0].name;
+            document.getElementById('file-name').textContent = 'Selected file: ' + fileName;
+        });
+    </script>
 </body>
 </html>

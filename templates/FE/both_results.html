@@ -2,262 +2,158 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='results_styles.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analysis</title>
-
+    <title>Academic Performance Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .backlog-box, .grace-box {
-            margin: 20px 0;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .backlog-box {
-            background-color: #f9f9f9;
-        }
-        .grace-box {
-            background-color: #e9f9e9;
-        }
-        .f-grade-row {
-            background-color: #fdd;
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
         }
     </style>
 </head>
-<body>
-    <h1>Extracted Information</h1>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8 text-indigo-600">Academic Performance Analysis</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-indigo-600">1. Backlog Status</h2>
+                <div class="space-y-4">
+                    <div class="p-4 {% if backlogs_sem1 > 0 %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %} rounded-lg">
+                        <h3 class="font-semibold">Semester 1</h3>
+                        <p>{% if backlogs_sem1 > 0 %}You have backlogs in {{ backlogs_sem1 }} subject(s).{% else %}No backlogs.{% endif %}</p>
+                    </div>
+                    <div class="p-4 {% if backlogs_sem2 > 0 %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %} rounded-lg">
+                        <h3 class="font-semibold">Semester 2</h3>
+                        <p>{% if backlogs_sem2 > 0 %}You have backlogs in {{ backlogs_sem2 }} subject(s).{% else %}No backlogs.{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-indigo-600">2. Grace Marks Applied</h2>
+                <div class="space-y-4">
+                    <div class="p-4 {% if grace_marks_sem1 > 0 %}bg-yellow-100 text-yellow-700{% else %}bg-green-100 text-green-700{% endif %} rounded-lg">
+                        <h3 class="font-semibold">Semester 1</h3>
+                        <p>{% if grace_marks_sem1 > 0 %}Grace marks applied in {{ grace_marks_sem1 }} subject(s).{% else %}No grace marks applied.{% endif %}</p>
+                    </div>
+                    <div class="p-4 {% if grace_marks_sem2 > 0 %}bg-yellow-100 text-yellow-700{% else %}bg-green-100 text-green-700{% endif %} rounded-lg">
+                        <h3 class="font-semibold">Semester 2</h3>
+                        <p>{% if grace_marks_sem2 > 0 %}Grace marks applied in {{ grace_marks_sem2 }} subject(s).{% else %}No grace marks applied.{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 text-indigo-600">3. Semester 1 Subjects</h2>
+            <div class="mb-4">
+                <p class="font-semibold">SGPA: <span class="text-indigo-600">{{ info_sem1.SGPA }}</span></p>
+                <p class="font-semibold">Credits Earned: <span class="text-green-600">{{ total_sem1_earned }} / {{ total_sem1_credits }}</span></p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-indigo-100">
+                            <th class="p-2 text-left">Name</th>
+                            <th class="p-2 text-left">Credits</th>
+                            <th class="p-2 text-left">Grade</th>
+                            <th class="p-2 text-left">Earned</th>
+                            <th class="p-2 text-left">Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subject in sem1_subjects %}
+                        <tr class="{% if loop.index % 2 == 0 %}bg-gray-50{% endif %} {% if subject.grade == 'F' %}text-red-600{% endif %}">
+                            <td class="p-2">{{ subject.name }}</td>
+                            <td class="p-2">{{ subject.credits }}</td>
+                            <td class="p-2">{{ subject.grade }} ({{ subject.grade_point }})</td>
+                            <td class="p-2">{{ subject.earned }}</td>
+                            <td class="p-2">{{ subject.points }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="font-bold bg-indigo-100">
+                            <td class="p-2">Total</td>
+                            <td class="p-2">{{ total_sem1_credits }}</td>
+                            <td class="p-2"></td>
+                            <td class="p-2">{{ total_sem1_earned }}</td>
+                            <td class="p-2">{{ total_sem1_points }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <h2>Additional Information - Semester 1</h2>
-    <table>
-        <tr>
-            <th>SGPA</th>
-            <td>{{ info_sem1.SGPA }}</td>
-        </tr>
-        <tr>
-            <th>Credits Earned</th>
-            <td>{{ total_sem1_earned }}</td>
-        </tr>
-        <tr>
-            <th>Total Credits</th>
-            <td>{{ total_sem1_credits }}</td>
-        </tr>
-        <tr>
-            <th>Total Credit Points</th>
-            <td>{{ total_sem1_points }}</td>
-        </tr>
-    </table>
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 text-indigo-600">4. Semester 2 Subjects</h2>
+            <div class="mb-4">
+                <p class="font-semibold">SGPA: <span class="text-indigo-600">{{ info_sem2.SGPA }}</span></p>
+                <p class="font-semibold">Credits Earned: <span class="text-green-600">{{ total_sem2_earned }} / {{ info_sem2.total_cred }}</span></p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-indigo-100">
+                            <th class="p-2 text-left">Name</th>
+                            <th class="p-2 text-left">Credits</th>
+                            <th class="p-2 text-left">Grade</th>
+                            <th class="p-2 text-left">Earned</th>
+                            <th class="p-2 text-left">Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subject in sem2_subjects %}
+                        <tr class="{% if loop.index % 2 == 0 %}bg-gray-50{% endif %} {% if subject.grade == 'F' %}text-red-600{% endif %}">
+                            <td class="p-2">{{ subject.name }}</td>
+                            <td class="p-2">{{ subject.credits }}</td>
+                            <td class="p-2">{{ subject.grade }} ({{ subject.grade_point }})</td>
+                            <td class="p-2">{{ subject.earned }}</td>
+                            <td class="p-2">{{ subject.points }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="font-bold bg-indigo-100">
+                            <td class="p-2">Total</td>
+                            <td class="p-2">{{ total_sem2_credits }}</td>
+                            <td class="p-2"></td>
+                            <td class="p-2">{{ total_sem2_earned }}</td>
+                            <td class="p-2">{{ total_sem2_points }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <div class="backlog-box">
-        <h3>Backlog Status - Semester 1</h3>
-        {% if backlogs_sem1 > 0 %}
-            <p>You have backlogs in {{ backlogs_sem1 }} subject(s) in Semester 1.</p>
-        {% else %}
-            <p>No backlogs in Semester 1.</p>
-        {% endif %}
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 text-indigo-600">5. Grading System</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-indigo-100">
+                            <th class="p-2 text-left">Marks Range</th>
+                            <th class="p-2 text-left">Grade</th>
+                            <th class="p-2 text-left">Description</th>
+                            <th class="p-2 text-left">Grade Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="p-2">80-100</td><td class="p-2">O</td><td class="p-2">Outstanding</td><td class="p-2">10</td></tr>
+                        <tr class="bg-gray-50"><td class="p-2">70-79</td><td class="p-2">A+</td><td class="p-2">Excellent</td><td class="p-2">9</td></tr>
+                        <tr><td class="p-2">60-69</td><td class="p-2">A</td><td class="p-2">Very Good</td><td class="p-2">8</td></tr>
+                        <tr class="bg-gray-50"><td class="p-2">55-59</td><td class="p-2">B+</td><td class="p-2">Good</td><td class="p-2">7</td></tr>
+                        <tr><td class="p-2">50-54</td><td class="p-2">B</td><td class="p-2">Above Average</td><td class="p-2">6</td></tr>
+                        <tr class="bg-gray-50"><td class="p-2">45-49</td><td class="p-2">C</td><td class="p-2">Average</td><td class="p-2">5</td></tr>
+                        <tr><td class="p-2">40-44</td><td class="p-2">P</td><td class="p-2">Pass</td><td class="p-2">4</td></tr>
+                        <tr class="bg-gray-50"><td class="p-2">0-39</td><td class="p-2">F</td><td class="p-2">Fail</td><td class="p-2">0</td></tr>
+                        <tr><td class="p-2">-</td><td class="p-2">Ab</td><td class="p-2">Absent</td><td class="p-2">0</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="/" class="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300">Upload Another File</a>
+        </div>
     </div>
-
-    <div class="grace-box">
-        <h3>Grace Marks Applied - Semester 1</h3>
-        {% if grace_marks_sem1 > 0 %}
-            <p>You have grace marks in {{ grace_marks_sem1 }} subject(s) in Semester 1.</p>
-        {% else %}
-            <p>No grace marks in Semester 1.</p>
-        {% endif %}
-    </div>
-
-    <h2>Semester 1 Subjects</h2>
-    <table>
-        <thead>
-            <tr>
-                <!--<th>Code</th>-->
-                <th>Name</th>
-                <th>Credits</th>
-                <th>Grade (Grade Point) Earned</th>
-                <th>Earned</th>
-                <th>Grade Point</th>
-                <th>Points</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for subject in sem1_subjects %}
-            <tr class="{% if subject.grade == 'F' %}f-grade-row{% endif %}">
-                <!--<td>{{ subject.code }}</td> -->
-                <td>{{ subject.name }}</td>
-                <td>{{ subject.credits }}</td>
-                <td>{{ subject.grade }} = {{ subject.grade_point }}</td>
-                <td>{{subject.earned}}</td>
-                <td>{{subject.earned}} × {{subject.grade_point}} = {{ subject.earned * subject.grade_point }}</td>
-                <td>{{ subject.points }}</td>
-            </tr>
-            {% endfor %}
-            <tr>
-                <td><strong>Total</strong></td>
-                <td><strong>{{ total_sem1_credits }}</strong></td>
-                <td></td>
-                <td><strong>{{ total_sem1_earned }}</strong></td>
-                <td></td>
-                <td><strong>{{ total_sem1_points }}</strong></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <h2>Additional Information - Semester 2</h2>
-    <table>
-        <tr>
-            <th>SGPA</th>
-            <td>{{ info_sem2.SGPA }}</td>
-        </tr>
-        <tr>
-            <th>Credits Earned</th>
-            <td>{{ total_sem2_earned }}</td>
-        </tr>
-        <tr>
-            <th>Total Credits</th>
-            <td>{{ info_sem2.total_cred }}</td>
-        </tr>
-        <tr>
-            <th>Total Credit Points</th>
-            <td>{{ total_sem2_points }}</td>
-        </tr>
-    </table>
-
-    <div class="backlog-box">
-        <h3>Backlog Status - Semester 2</h3>
-        {% if backlogs_sem2 > 0 %}
-            <p>You have backlogs in {{ backlogs_sem2 }} subject(s) in Semester 2.</p>
-        {% else %}
-            <p>No backlogs in Semester 2.</p>
-        {% endif %}
-    </div>
-
-    <div class="grace-box">
-        <h3>Grace Marks Applied - Semester 2</h3>
-        {% if grace_marks_sem2 > 0 %}
-            <p>You have grace marks in {{ grace_marks_sem2 }} subject(s) in Semester 2.</p>
-        {% else %}
-            <p>No grace marks in Semester 2.</p>
-        {% endif %}
-    </div>
-
-    <h2>Semester 2 Subjects</h2>
-    <table>
-        <thead>
-            <tr>
-                <!--<th>Code</th>-->
-                <th>Name</th>
-                <th>Credits</th>
-                <th>Grade (Grade Point) Earned</th>
-                <th>Earned</th>
-                <th>Grade Point</th>
-                <th>Points</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for subject in sem2_subjects %}
-            <tr class="{% if subject.grade == 'F' %}f-grade-row{% endif %}">
-                <!--<td>{{ subject.code }}</td> -->
-                <td>{{ subject.name }}</td>
-                <td>{{ subject.credits }}</td>
-                <td>{{ subject.grade }} = {{ subject.grade_point }}</td>
-                <td>{{subject.earned}}</td>
-                <td>{{subject.earned}} × {{subject.grade_point}} = {{ subject.earned * subject.grade_point }}</td>
-                <td>{{ subject.points }}</td>
-            </tr>
-            {% endfor %}
-            <tr>
-                <td><strong>Total</strong></td>
-                <td><strong>{{ total_sem2_credits }}</strong></td>
-                <td></td>
-                <td><strong>{{ total_sem2_earned }}</strong></td>
-                <td></td>
-                <td><strong>{{ total_sem2_points }}</strong></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <h2>Grading System</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Marks Range</th>
-                <th>Grade</th>
-                <th>Description</th>
-                <th>Grade Points</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>80-100</td>
-                <td>O</td>
-                <td>Outstanding</td>
-                <td>10</td>
-            </tr>
-            <tr>
-                <td>70-79</td>
-                <td>A+</td>
-                <td>Excellent</td>
-                <td>9</td>
-            </tr>
-            <tr>
-                <td>60-69</td>
-                <td>A</td>
-                <td>Very Good</td>
-                <td>8</td>
-            </tr>
-            <tr>
-                <td>55-59</td>
-                <td>B+</td>
-                <td>Good</td>
-                <td>7</td>
-            </tr>
-            <tr>
-                <td>50-54</td>
-                <td>B</td>
-                <td>Above Average</td>
-                <td>6</td>
-            </tr>
-            <tr>
-                <td>45-49</td>
-                <td>C</td>
-                <td>Average</td>
-                <td>5</td>
-            </tr>
-            <tr>
-                <td>40-44</td>
-                <td>P</td>
-                <td>Pass</td>
-                <td>4</td>
-            </tr>
-            <tr>
-                <td>0-39</td>
-                <td>F</td>
-                <td>Fail</td>
-                <td>0</td>
-            </tr>
-            <tr>
-                <td>-</td>
-                <td>Ab</td>
-                <td>Absent</td>
-                <td>0</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="/">Upload another file</a>
 </body>
 </html>
