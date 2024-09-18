@@ -1,50 +1,30 @@
-from flask import Flask, request, render_template, send_file
-import os
+from flask import Flask, render_template
 from FE.fe_sem1 import upload_file as sem1_upload
-from FE.fe_sem2 import upload_file as sem2_upload, index as sem2_index
+from FE.fe_sem2 import upload_file as sem2_upload
 from FE.fe_sem1_sem2 import upload_file as sem1_sem2_upload
+import logging
 
 app = Flask(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
-# Use /tmp directory on Vercel for uploads
-app.config['UPLOAD_FOLDER'] = '/tmp/uploads'
-app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
-
-# Create upload folder in /tmp if it doesn't exist
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
-
-# Route for selecting semester
 @app.route('/')
 def home():
-    return render_template('index.html')  # Create a simple home page to select SEM1, SEM2, or SEM1 & SEM2
+    return render_template('index.html')
 
-# Route to handle SEM1 PDF processing
 @app.route('/sem1', methods=['GET', 'POST'])
 def run_sem1():
-    return sem1_upload()  # Call the function from fe_sem1.py
+    app.logger.debug('Accessing /sem1 route')
+    return sem1_upload()
 
-# Route to handle SEM2 PDF processing
 @app.route('/sem2', methods=['GET', 'POST'])
 def run_sem2():
-    if request.method == 'POST':
-        return sem2_upload()  # Call the upload_file function from fe_sem2.py
-    return render_template('FE/upload_sem2.html')
+    app.logger.debug('Accessing /sem2 route')
+    return sem2_upload()
 
-# New route to handle SEM2 PDF download
-@app.route('/sem2_download', methods=['GET', 'POST'])
-def sem2_download():
-    return sem2_index()  # Call the index function from fe_sem2.py
-
-# Route to handle SEM1 & SEM2 combined PDF processing
 @app.route('/fe_sem1_sem2', methods=['GET', 'POST'])
 def run_sem1_sem2():
-    if request.method == 'POST':
-        return sem1_sem2_upload()  # Call the function from fe_sem1_sem2.py
-    return render_template('FE/upload_sem1_sem2.html')  # The HTML form for SEM1 & SEM2 combined upload
+    app.logger.debug('Accessing /fe_sem1_sem2 route')
+    return sem1_sem2_upload()
 
 if __name__ == '__main__':
     app.run(debug=True)

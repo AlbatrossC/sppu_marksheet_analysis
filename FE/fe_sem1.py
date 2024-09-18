@@ -1,27 +1,21 @@
-from flask import Flask, request, render_template, send_file
-import fitz  # PyMuPDF for PDF handling
+from flask import Flask, request, render_template
+import fitz
 from werkzeug.utils import secure_filename
 import os
 import requests
-
-# Import rectangles from rects.py (these need to exist in your project)
 from location.FE.SEM1.sem1_rects import rects1, rects2, rects3, rects4, rects5, rects6, rects7, rects8, rects9, rects10, rects11, rects12, rects13
 
 app = Flask(__name__)
 
-# Use /tmp directory on Vercel for uploads
 UPLOAD_FOLDER = '/tmp/uploads'
 ALLOWED_EXTENSIONS = {'pdf'}
 
-# Ensure the upload folder exists in /tmp
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-# Function to check if the file is allowed
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Class for holding subject data
 class Subject:
     def __init__(self, code, name, credits='', earned='', grade='', grade_point='', points=''):
         self.code = code
@@ -39,7 +33,6 @@ class Subject:
         except ValueError:
             return 0
 
-# Class for additional information (like SGPA)
 class AdditionalInfo:
     def __init__(self, SGPA='', cred_earned='', total_cred='', total_credit_pt=''):
         self.SGPA = SGPA
@@ -54,7 +47,6 @@ class AdditionalInfo:
         except ValueError:
             return 0
 
-# Function to extract text from a rectangle on the PDF page
 def extract_text(page, rect):
     try:
         return page.get_text("text", clip=rect).strip()
@@ -62,19 +54,15 @@ def extract_text(page, rect):
         print(f"Error extracting text: {e}")
         return ''
 
-# Function to count backlogs based on grades
 def count_backlogs(subjects):
     return sum(1 for subject in subjects if subject.grade == 'F')
 
-# Function to check if any subject has grace marks based on '#' symbol in points
 def count_grace_marks(subjects):
     return sum(1 for subject in subjects if '#' in str(subject.points))
 
-# Function to calculate the total earned credits
 def calculate_total_earned_credits(subjects):
     return sum(subject.earned for subject in subjects)
 
-# Function to download PDF
 def download_pdf(url, payload, student_name):
     retry_count = 3
     for _ in range(retry_count):
@@ -91,13 +79,12 @@ def download_pdf(url, payload, student_name):
             continue
     return None
 
-# Function to process the PDF
 def process_pdf(file_path):
     doc = fitz.open(file_path)
     page = doc.load_page(0)
 
     subjects = []
-    for i in range(1, 13):  # Assuming you have 12 subjects
+    for i in range(1, 13):
         rect = globals().get(f"rects{i}", {})
         subject = Subject(
             code=extract_text(page, rect.get(f"code{i}", {})),
@@ -122,8 +109,6 @@ def process_pdf(file_path):
 
     return subjects, info
 
-# Main function to handle file uploads and processing for Semester 1
-@app.route('/sem1', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         if 'file' in request.files:
@@ -139,7 +124,7 @@ def upload_file():
 
             url = 'https://onlineresults.unipune.ac.in/Result/Dashboard/ViewResult1'
             payload = {
-                'PatternID': '6Qw72CLlcXSacHyT9a7RkQ==',  # Example June 2024
+                'PatternID': '6Qw72CLlcXSacHyT9a7RkQ==',
                 'PatternName': 'RP+zm4rXwFDLUrTpUWU4sEa3GhqzYZU+2WOHorilLYgi2RQ6OKyRcE4pLb5zFaQ9',
                 'SeatNo': seat_no,
                 'MotherName': mother_name
@@ -162,6 +147,3 @@ def upload_file():
         return render_template('FE/results.html', info=info, subjects=subjects, backlog_message=backlog_message, grace_message=grace_message, total_earned_credits=total_earned_credits)
 
     return render_template('FE/upload_sem1.html')
-
-if __name__ == '__main__':
-    app.run(debug=True)

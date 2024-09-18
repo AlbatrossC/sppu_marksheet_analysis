@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_file
+from flask import Flask, request, render_template
 import fitz
 from werkzeug.utils import secure_filename
 import os
@@ -12,31 +12,46 @@ from location.FE.Both.both_rects import (
 )
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = '/tmp/uploads'  
-app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
 
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
+UPLOAD_FOLDER = '/tmp/uploads'
+ALLOWED_EXTENSIONS = {'pdf'}
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 class Subject:
     def __init__(self, code, name, credits='', earned='', grade='', grade_point='', points=''):
         self.code = code
         self.name = name
-        self.credits = credits
-        self.earned = earned
+        self.credits = self.convert_to_int(credits)
+        self.earned = self.convert_to_int(earned)
         self.grade = grade
-        self.grade_point = grade_point
+        self.grade_point = self.convert_to_int(grade_point)
         self.points = points
+
+    @staticmethod
+    def convert_to_int(value):
+        try:
+            return int(value)
+        except ValueError:
+            return 0
 
 class AdditionalInfo:
     def __init__(self, SGPA='', cred_earned='', total_cred='', total_credit_pt=''):
         self.SGPA = SGPA
-        self.cred_earned = cred_earned
-        self.total_cred = total_cred
-        self.total_credit_pt = total_credit_pt
+        self.cred_earned = self.convert_to_int(cred_earned)
+        self.total_cred = self.convert_to_int(total_cred)
+        self.total_credit_pt = self.convert_to_int(total_credit_pt)
+
+    @staticmethod
+    def convert_to_int(value):
+        try:
+            return int(value)
+        except ValueError:
+            return 0
 
 def extract_text(page, rect):
     try:
@@ -45,11 +60,14 @@ def extract_text(page, rect):
         print(f"Error extracting text: {e}")
         return ''
 
-def parse_int(value):
-    try:
-        return int(value)
-    except ValueError:
-        return 0
+def count_backlogs(subjects):
+    return sum(1 for subject in subjects if subject.grade == 'F')
+
+def count_grace_marks(subjects):
+    return sum(1 for subject in subjects if '#' in str(subject.points))
+
+def calculate_total_earned_credits(subjects):
+    return sum(subject.earned for subject in subjects)
 
 def download_pdf(url, payload, student_name):
     retry_count = 3
@@ -58,7 +76,7 @@ def download_pdf(url, payload, student_name):
             with requests.Session() as session:
                 response = session.post(url, data=payload, verify=False, timeout=10)
                 response.raise_for_status()
-                pdf_path = os.path.join(app.config['UPLOAD_FOLDER'], f'{student_name}.pdf')
+                pdf_path = os.path.join(UPLOAD_FOLDER, f'{student_name}.pdf')
                 with open(pdf_path, 'wb') as f:
                     f.write(response.content)
                 return pdf_path
@@ -71,68 +89,59 @@ def process_pdf(file_path):
     doc = fitz.open(file_path)
     page = doc.load_page(0)
 
-    # Process Semester 1
     sem1_subjects = []
     for i in range(1, 13):
         rect = globals().get(f"sem1_rects{i}", {})
-        points_text = extract_text(page, rect.get(f"pnt{i}", {}))
-        
         subject = Subject(
             code=extract_text(page, rect.get(f"code{i}", {})),
             name=extract_text(page, rect.get(f"name{i}", {})),
-            credits=parse_int(extract_text(page, rect.get(f"crd{i}", {}))),
-            earned=parse_int(extract_text(page, rect.get(f"earned{i}", {}))),
+            credits=extract_text(page, rect.get(f"crd{i}", {})),
+            earned=extract_text(page, rect.get(f"earned{i}", {})),
             grade=extract_text(page, rect.get(f"grd{i}", {})),
-            grade_point=parse_int(extract_text(page, rect.get(f"gp{i}", {}))),
-            points=points_text
+            grade_point=extract_text(page, rect.get(f"gp{i}", {})),
+            points=extract_text(page, rect.get(f"pnt{i}", {}))
         )
         sem1_subjects.append(subject)
 
-    # Process Semester 2
     sem2_subjects = []
     for i in range(1, 15):
         rect = globals().get(f"sem2_rects{i}", {})
-        points_text = extract_text(page, rect.get(f"pnt{i}", {}))
-        
         subject = Subject(
             code=extract_text(page, rect.get(f"code{i}", {})),
             name=extract_text(page, rect.get(f"name{i}", {})),
-            credits=parse_int(extract_text(page, rect.get(f"crd{i}", {}))),
-            earned=parse_int(extract_text(page, rect.get(f"earned{i}", {}))),
+            credits=extract_text(page, rect.get(f"crd{i}", {})),
+            earned=extract_text(page, rect.get(f"earned{i}", {})),
             grade=extract_text(page, rect.get(f"grd{i}", {})),
-            grade_point=parse_int(extract_text(page, rect.get(f"gp{i}", {}))),
-            points=points_text
+            grade_point=extract_text(page, rect.get(f"gp{i}", {})),
+            points=extract_text(page, rect.get(f"pnt{i}", {}))
         )
         sem2_subjects.append(subject)
 
-    # Additional info for Semester 1
     info_sem1 = AdditionalInfo(
         SGPA=extract_text(page, sem1_rects13.get("SGPA", {})),
-        cred_earned=parse_int(extract_text(page, sem1_rects13.get("cred_earned", {}))),
-        total_cred=parse_int(extract_text(page, sem1_rects13.get("total_cred", {}))),
-        total_credit_pt=parse_int(extract_text(page, sem1_rects13.get("total_credit_pt", {})))
+        cred_earned=extract_text(page, sem1_rects13.get("cred_earned", {})),
+        total_cred=extract_text(page, sem1_rects13.get("total_cred", {})),
+        total_credit_pt=extract_text(page, sem1_rects13.get("total_credit_pt", {}))
     )
 
-    # Additional info for Semester 2
     info_sem2 = AdditionalInfo(
         SGPA=extract_text(page, sem2_rects15.get("SGPA", {})),
-        cred_earned=parse_int(extract_text(page, sem2_rects15.get("cred_earned", {}))),
-        total_cred=parse_int(extract_text(page, sem2_rects15.get("total_cred", {}))),
-        total_credit_pt=parse_int(extract_text(page, sem2_rects15.get("total_credit_pt", {})))
+        cred_earned=extract_text(page, sem2_rects15.get("cred_earned", {})),
+        total_cred=extract_text(page, sem2_rects15.get("total_cred", {})),
+        total_credit_pt=extract_text(page, sem2_rects15.get("total_credit_pt", {}))
     )
 
     doc.close()
 
     return sem1_subjects, sem2_subjects, info_sem1, info_sem2
 
-@app.route('/fe_sem1_sem2', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         if 'file' in request.files:
             file = request.files['file']
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file_path = os.path.join(UPLOAD_FOLDER, filename)
                 file.save(file_path)
         else:
             seat_no = request.form['seat_no']
@@ -141,7 +150,7 @@ def upload_file():
 
             url = 'https://onlineresults.unipune.ac.in/Result/Dashboard/ViewResult1'
             payload = {
-                'PatternID': '6Qw72CLlcXSacHyT9a7RkQ==',  # Example June 2024
+                'PatternID': '6Qw72CLlcXSacHyT9a7RkQ==',
                 'PatternName': 'RP+zm4rXwFDLUrTpUWU4sEa3GhqzYZU+2WOHorilLYgi2RQ6OKyRcE4pLb5zFaQ9',
                 'SeatNo': seat_no,
                 'MotherName': mother_name
@@ -153,18 +162,17 @@ def upload_file():
 
         sem1_subjects, sem2_subjects, info_sem1, info_sem2 = process_pdf(file_path)
 
-        # Calculate totals and other metrics
         total_sem1_credits = sum(subject.credits for subject in sem1_subjects)
         total_sem1_earned = sum(subject.earned for subject in sem1_subjects)
-        total_sem1_points = sum(parse_int(subject.points) for subject in sem1_subjects)
+        total_sem1_points = sum(Subject.convert_to_int(subject.points) for subject in sem1_subjects)
         total_sem2_credits = sum(subject.credits for subject in sem2_subjects)
         total_sem2_earned = sum(subject.earned for subject in sem2_subjects)
-        total_sem2_points = sum(parse_int(subject.points) for subject in sem2_subjects)
+        total_sem2_points = sum(Subject.convert_to_int(subject.points) for subject in sem2_subjects)
 
-        grace_marks_sem1 = sum(1 for subject in sem1_subjects if '#' in subject.points)
-        grace_marks_sem2 = sum(1 for subject in sem2_subjects if '#' in subject.points)
-        backlogs_sem1 = sum(1 for subject in sem1_subjects if 'F' in subject.grade)
-        backlogs_sem2 = sum(1 for subject in sem2_subjects if 'F' in subject.grade)
+        grace_marks_sem1 = sum(1 for subject in sem1_subjects if '#' in str(subject.points))
+        grace_marks_sem2 = sum(1 for subject in sem2_subjects if '#' in str(subject.points))
+        backlogs_sem1 = sum(1 for subject in sem1_subjects if subject.grade == 'F')
+        backlogs_sem2 = sum(1 for subject in sem2_subjects if subject.grade == 'F')
 
         return render_template(
             'FE/both_results.html', 
@@ -185,6 +193,3 @@ def upload_file():
         )
 
     return render_template('FE/upload_sem1_sem2.html')
-
-if __name__ == '__main__':
-    app.run(debug=True)
