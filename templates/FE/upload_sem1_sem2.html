@@ -18,7 +18,7 @@
             align-items: center;
         }
         .container {
-            max-width: 600px;
+            max-width: 700px;
             width: 90%;
             background-color: white;
             padding: 40px;
@@ -44,17 +44,39 @@
             background-color: #3498db;
             margin: 10px auto 0;
         }
+        h2 {
+            color: #3498db;
+            font-size: 22px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
         p.description {
             text-align: center;
             color: #7f8c8d;
             font-size: 16px;
             line-height: 1.6;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
         form {
             display: flex;
             flex-direction: column;
             gap: 20px;
+        }
+        label {
+            font-size: 16px;
+            color: #555;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #3498db;
         }
         .file-input-wrapper {
             position: relative;
@@ -101,6 +123,9 @@
             cursor: pointer;
             transition: background-color 0.3s, transform 0.1s;
             width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
         }
         .button:hover {
             background-color: #27ae60;
@@ -108,6 +133,41 @@
         }
         .button:active {
             transform: translateY(0);
+        }
+        .or-divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+        .or-divider::before, .or-divider::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 45%;
+            border-top: 2px dotted #ccc;
+        }
+        .or-divider::before {
+            left: 0;
+        }
+        .or-divider::after {
+            right: 0;
+        }
+        .or-divider span {
+            background-color: white;
+            padding: 0 15px;
+            position: relative;
+            color: #888;
+            font-weight: bold;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-size: 14px;
+            line-height: 1.5;
         }
         @media (max-width: 480px) {
             .container {
@@ -123,9 +183,28 @@
     <div class="container">
         <h1>FE Semester 1 & 2 Marksheet</h1>
         
-        <h2>Option 1: Upload Your Marksheet</h2>
+        <h2>Option 1: Fetch and Process Your Marksheet</h2>
         <p class="description">
-            Please upload the PDF of your First Year Engineering (FE) Semester 1 & 2 combined marksheet for analysis. Make sure the file is in PDF format and is valid before submitting.
+            Enter your seat number and mother's name to fetch and process your marksheet automatically.
+        </p>
+        <form action="/fe_sem1_sem2" method="POST">
+            <label for="seat_no">Seat Number:</label>
+            <input type="text" name="seat_no" id="seat_no" required>
+            <label for="mother_name">Mother's Name:</label>
+            <input type="text" name="mother_name" id="mother_name" required>
+            <button type="submit" class="button">Fetch and Process Marksheet</button>
+        </form>
+        <div class="warning">
+            <strong>Note:</strong> Due to the SPPU website's slow response or high traffic, fetching the marksheet may not always be successful. If you encounter issues, please try again by re-entering your credentials. If the problem persists, you can use the upload option below as an alternative.
+        </div>
+
+        <div class="or-divider">
+            <span>OR</span>
+        </div>
+
+        <h2>Option 2: Upload Your Marksheet</h2>
+        <p class="description">
+            If automatic fetching doesn't work, you can upload the PDF of your First Year Engineering (FE) Semester 1 & 2 combined marksheet for analysis. Make sure the file is in PDF format and is valid before submitting.
         </p>
         <form action="/fe_sem1_sem2" method="POST" enctype="multipart/form-data">
             <div class="file-input-wrapper">
@@ -138,20 +217,6 @@
             <button type="submit" class="button">
                 <i class="fas fa-upload"></i> Upload and Process
             </button>
-        </form>
-
-        <div class="or-divider">OR</div>
-
-        <h2>Option 2: Fetch and Process Your Marksheet</h2>
-        <p class="description">
-            Enter your seat number and mother's name to fetch and process your marksheet automatically.
-        </p>
-        <form action="/fe_sem1_sem2" method="POST">
-            <label for="seat_no">Seat Number:</label>
-            <input type="text" name="seat_no" id="seat_no" required>
-            <label for="mother_name">Mother's Name:</label>
-            <input type="text" name="mother_name" id="mother_name" required>
-            <button type="submit" class="button">Fetch and Process Marksheet</button>
         </form>
     </div>
 
