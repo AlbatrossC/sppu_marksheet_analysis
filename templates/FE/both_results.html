@@ -29,7 +29,7 @@
                                          "First Class with Distinction" %}
                         <p class="font-semibold">Semester 1: 
                             <span class="{% if degree1 == 'Failed' %}text-red-800{% else %}text-green-800{% endif %}">
-                                Passed with {{ degree1 }}
+                                {% if degree1 == 'Failed' %}Failed{% else %}Passed with {{ degree1 }}{% endif %}
                             </span>
                         </p>
                         <p>SGPA: <span class="font-bold">{{ info_sem1.SGPA }}</span></p>
@@ -43,7 +43,7 @@
                                          "First Class with Distinction" %}
                         <p class="font-semibold">Semester 2: 
                             <span class="{% if degree2 == 'Failed' %}text-red-800{% else %}text-green-800{% endif %}">
-                                Passed with {{ degree2 }}
+                                {% if degree2 == 'Failed' %}Failed{% else %}Passed with {{ degree2 }}{% endif %}
                             </span>
                         </p>
                         <p>SGPA: <span class="font-bold">{{ info_sem2.SGPA }}</span></p>
@@ -58,7 +58,7 @@
                         <p class="font-semibold">Overall CGPA: <span class="font-bold">{{ cgpa|round(2) }}</span></p>
                         <p>
                             <span class="{% if overall_degree == 'Failed' %}text-red-800{% else %}text-green-800{% endif %}">
-                                {{ "Failed" if overall_degree == "Failed" else "Passed with " + overall_degree }}
+                                {% if overall_degree == 'Failed' %}Failed{% else %}Passed with {{ overall_degree }}{% endif %}
                             </span>
                         </p>
                     </div>
@@ -74,7 +74,7 @@
                     <div class="p-4 bg-blue-50 text-blue-800 rounded-lg">
                         <p class="font-semibold">Semester 2 Earned Credits: <span class="font-bold">{{ total_sem2_earned }}</span></p>
                     </div>
-                    <div class="p-4 bg-green-50 text-green-800 rounded-lg">
+                    <div class="p-4 {% if total_sem1_earned + total_sem2_earned < 22 %}bg-red-50 text-red-800{% else %}bg-green-50 text-green-800{% endif %} rounded-lg">
                         <p class="font-semibold">Total Earned Credits: <span class="font-bold">{{ total_sem1_earned + total_sem2_earned }}</span></p>
                     </div>
                 </div>
@@ -125,8 +125,44 @@
                     </div>
                 </div>
             </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-black">3. Condo Marks Applied</h2>
+                <div class="space-y-4">
+                    <div class="p-4 {% if condo_marks_sem1 > 0 %}bg-yellow-50 text-yellow-800{% else %}bg-green-50 text-green-800{% endif %} rounded-lg">
+                        <h3 class="font-semibold">Semester 1</h3>
+                        <p>{% if condo_marks_sem1 > 0 %}Condo marks applied in {{ condo_marks_sem1 }} subject(s).{% else %}No condo marks applied.{% endif %}</p>
+                    </div>
+                    <div class="p-4 {% if condo_marks_sem2 > 0 %}bg-yellow-50 text-yellow-800{% else %}bg-green-50 text-green-800{% endif %} rounded-lg">
+                        <h3 class="font-semibold">Semester 2</h3>
+                        <p>{% if condo_marks_sem2 > 0 %}Condo marks applied in {{ condo_marks_sem2 }} subject(s).{% else %}No condo marks applied.{% endif %}</p>
+                    </div>
+                    <div class="border-t-2 border-b-2 border-dotted border-gray-400 py-4 mt-4">
+                        <p class="font-bold text-center {% if condo_marks_sem1 + condo_marks_sem2 > 0 %}text-yellow-800{% else %}text-green-800{% endif %}">
+                            Total Subjects with Condo Marks: {{ condo_marks_sem1 + condo_marks_sem2 }}
+                        </p>
+                    </div>
+                    <div class="p-4 bg-blue-50 text-blue-800 rounded-lg mt-4">
+                        <p class="text-sm"><strong>Note:</strong> Condo marks are extra marks given under special conditions. It is denoted by <span class="font-bold text-yellow-800">$</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-black">4. CGPA to Percentage</h2>
+                <div class="space-y-4">
+                    <div class="p-4 bg-green-50 text-green-800 rounded-lg">
+                        <h3 class="font-semibold">CGPA to Percentage</h3>
+                        <p>Your CGPA: {{ cgpa|round(2) }}</p>
+                        <p>Equivalent Percentage: {{ ((cgpa|round(2)) - 0.5) * 10 }}%</p>
+                    </div>
+                    <div class="p-4 bg-blue-50 text-blue-800 rounded-lg mt-4">
+                        <p class="text-sm"><strong>Note:</strong> The percentage is calculated using the formula: (CGPA – 0.5) * 10.</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        
+
         <div class="bg-white rounded-lg shadow-md p-6 mb-8">
             <h2 class="text-2xl font-semibold mb-4 text-black">3. Semester 1 Subjects</h2>
             <div class="mb-4">

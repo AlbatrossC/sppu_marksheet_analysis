@@ -175,6 +175,10 @@ def upload_file():
             backlogs_sem1 = sum(1 for subject in sem1_subjects if subject.grade == 'F')
             backlogs_sem2 = sum(1 for subject in sem2_subjects if subject.grade == 'F')
 
+            # Calculate Condo marks
+            condo_marks_sem1 = sum(1 for subject in sem1_subjects if '$' in str(subject.points))
+            condo_marks_sem2 = sum(1 for subject in sem2_subjects if '$' in str(subject.points))
+
             return render_template(
                 'FE/both_results.html', 
                 info_sem1=info_sem1, 
@@ -190,7 +194,9 @@ def upload_file():
                 grace_marks_sem1=grace_marks_sem1, 
                 grace_marks_sem2=grace_marks_sem2,
                 backlogs_sem1=backlogs_sem1, 
-                backlogs_sem2=backlogs_sem2
+                backlogs_sem2=backlogs_sem2,
+                condo_marks_sem1=condo_marks_sem1,  # Pass condo marks to the template
+                condo_marks_sem2=condo_marks_sem2   # Pass condo marks to the template
             )
         except Exception as e:
             print(f"Error: {e}")
