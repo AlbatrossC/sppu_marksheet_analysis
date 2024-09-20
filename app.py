@@ -1,6 +1,5 @@
 from flask import Flask, render_template
 from FE.fe_sem1 import upload_file as sem1_upload
-from FE.fe_sem2 import upload_file as sem2_upload
 from FE.fe_sem1_sem2 import upload_file as sem1_sem2_upload
 import logging
 
@@ -15,11 +14,6 @@ def home():
 def run_sem1():
     app.logger.debug('Accessing /sem1 route')
     return sem1_upload()
-
-@app.route('/sem2', methods=['GET', 'POST'])
-def run_sem2():
-    app.logger.debug('Accessing /sem2 route')
-    return sem2_upload()
 
 @app.route('/fe_sem1_sem2', methods=['GET', 'POST'])
 def run_sem1_sem2():
