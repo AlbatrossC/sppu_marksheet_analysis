@@ -14,40 +14,121 @@
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold text-center mb-8 text-indigo-600">Academic Performance Analysis</h1>
+        <h1 class="text-4xl font-bold text-center mb-8 text-black">Academic Performance Analysis</h1>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-semibold mb-4 text-indigo-600">1. Backlog Status</h2>
+                <h2 class="text-2xl font-semibold mb-4 text-black">Overall Performance</h2>
                 <div class="space-y-4">
-                    <div class="p-4 {% if backlogs_sem1 > 0 %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %} rounded-lg">
-                        <h3 class="font-semibold">Semester 1</h3>
-                        <p>{% if backlogs_sem1 > 0 %}You have backlogs in {{ backlogs_sem1 }} subject(s).{% else %}No backlogs.{% endif %}</p>
+                    <div class="p-4 bg-blue-50 text-blue-800 rounded-lg">
+                        {% set sgpa1 = info_sem1.SGPA|float %}
+                        {% set degree1 = "Failed" if sgpa1 < 5.5 else
+                                         "Second Class" if sgpa1 < 6.25 else
+                                         "Higher Second Class" if sgpa1 < 6.75 else
+                                         "First Class" if sgpa1 < 7.75 else
+                                         "First Class with Distinction" %}
+                        <p class="font-semibold">Semester 1: 
+                            <span class="{% if degree1 == 'Failed' %}text-red-800{% else %}text-green-800{% endif %}">
+                                Passed with {{ degree1 }}
+                            </span>
+                        </p>
+                        <p>SGPA: <span class="font-bold">{{ info_sem1.SGPA }}</span></p>
                     </div>
-                    <div class="p-4 {% if backlogs_sem2 > 0 %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %} rounded-lg">
-                        <h3 class="font-semibold">Semester 2</h3>
-                        <p>{% if backlogs_sem2 > 0 %}You have backlogs in {{ backlogs_sem2 }} subject(s).{% else %}No backlogs.{% endif %}</p>
+                    <div class="p-4 bg-blue-50 text-blue-800 rounded-lg">
+                        {% set sgpa2 = info_sem2.SGPA|float %}
+                        {% set degree2 = "Failed" if sgpa2 < 5.5 else
+                                         "Second Class" if sgpa2 < 6.25 else
+                                         "Higher Second Class" if sgpa2 < 6.75 else
+                                         "First Class" if sgpa2 < 7.75 else
+                                         "First Class with Distinction" %}
+                        <p class="font-semibold">Semester 2: 
+                            <span class="{% if degree2 == 'Failed' %}text-red-800{% else %}text-green-800{% endif %}">
+                                Passed with {{ degree2 }}
+                            </span>
+                        </p>
+                        <p>SGPA: <span class="font-bold">{{ info_sem2.SGPA }}</span></p>
+                    </div>
+                    <div class="p-4 {% if (sgpa1 + sgpa2) / 2 < 5.5 %}bg-red-50 text-red-800{% else %}bg-green-50 text-green-800{% endif %} rounded-lg">
+                        {% set cgpa = (sgpa1 + sgpa2) / 2 %}
+                        {% set overall_degree = "Failed" if cgpa < 5.5 else
+                                                "Second Class" if cgpa < 6.25 else
+                                                "Higher Second Class" if cgpa < 6.75 else
+                                                "First Class" if cgpa < 7.75 else
+                                                "First Class with Distinction" %}
+                        <p class="font-semibold">Overall CGPA: <span class="font-bold">{{ cgpa|round(2) }}</span></p>
+                        <p>
+                            <span class="{% if overall_degree == 'Failed' %}text-red-800{% else %}text-green-800{% endif %}">
+                                {{ "Failed" if overall_degree == "Failed" else "Passed with " + overall_degree }}
+                            </span>
+                        </p>
                     </div>
                 </div>
             </div>
             
             <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-semibold mb-4 text-indigo-600">2. Grace Marks Applied</h2>
+                <h2 class="text-2xl font-semibold mb-4 text-black">Total Earned Credits</h2>
                 <div class="space-y-4">
-                    <div class="p-4 {% if grace_marks_sem1 > 0 %}bg-yellow-100 text-yellow-700{% else %}bg-green-100 text-green-700{% endif %} rounded-lg">
+                    <div class="p-4 bg-blue-50 text-blue-800 rounded-lg">
+                        <p class="font-semibold">Semester 1 Earned Credits: <span class="font-bold">{{ total_sem1_earned }}</span></p>
+                    </div>
+                    <div class="p-4 bg-blue-50 text-blue-800 rounded-lg">
+                        <p class="font-semibold">Semester 2 Earned Credits: <span class="font-bold">{{ total_sem2_earned }}</span></p>
+                    </div>
+                    <div class="p-4 bg-green-50 text-green-800 rounded-lg">
+                        <p class="font-semibold">Total Earned Credits: <span class="font-bold">{{ total_sem1_earned + total_sem2_earned }}</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-black">1. Backlog Status</h2>
+                <div class="space-y-4">
+                    <div class="p-4 {% if backlogs_sem1 > 0 %}bg-red-50 text-red-800{% else %}bg-green-50 text-green-800{% endif %} rounded-lg">
+                        <h3 class="font-semibold">Semester 1</h3>
+                        <p>{% if backlogs_sem1 > 0 %}You have backlogs in {{ backlogs_sem1 }} subject(s).{% else %}No backlogs.{% endif %}</p>
+                    </div>
+                    <div class="p-4 {% if backlogs_sem2 > 0 %}bg-red-50 text-red-800{% else %}bg-green-50 text-green-800{% endif %} rounded-lg">
+                        <h3 class="font-semibold">Semester 2</h3>
+                        <p>{% if backlogs_sem2 > 0 %}You have backlogs in {{ backlogs_sem2 }} subject(s).{% else %}No backlogs.{% endif %}</p>
+                    </div>
+                    <div class="border-t-2 border-b-2 border-dotted border-gray-400 py-4 mt-4">
+                        <p class="font-bold text-center {% if backlogs_sem1 + backlogs_sem2 > 0 %}text-red-800{% else %}text-green-800{% endif %}">
+                            Total Backlogs: {{ backlogs_sem1 + backlogs_sem2 }}
+                        </p>
+                    </div>
+                    <div class="p-4 bg-blue-50 text-blue-800 rounded-lg mt-4">
+                        <p class="text-sm"><strong>Note:</strong> Backlogs are subjects you didn't pass and need to clear in future exams. For Ex: if you fail a subject, it's considered a backlog. It is denoted by an <span class="font-bold text-red-800">F</span> symbol in your grade.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-black">2. Grace Marks Applied</h2>
+                <div class="space-y-4">
+                    <div class="p-4 {% if grace_marks_sem1 > 0 %}bg-yellow-50 text-yellow-800{% else %}bg-green-50 text-green-800{% endif %} rounded-lg">
                         <h3 class="font-semibold">Semester 1</h3>
                         <p>{% if grace_marks_sem1 > 0 %}Grace marks applied in {{ grace_marks_sem1 }} subject(s).{% else %}No grace marks applied.{% endif %}</p>
                     </div>
-                    <div class="p-4 {% if grace_marks_sem2 > 0 %}bg-yellow-100 text-yellow-700{% else %}bg-green-100 text-green-700{% endif %} rounded-lg">
+                    <div class="p-4 {% if grace_marks_sem2 > 0 %}bg-yellow-50 text-yellow-800{% else %}bg-green-50 text-green-800{% endif %} rounded-lg">
                         <h3 class="font-semibold">Semester 2</h3>
                         <p>{% if grace_marks_sem2 > 0 %}Grace marks applied in {{ grace_marks_sem2 }} subject(s).{% else %}No grace marks applied.{% endif %}</p>
+                    </div>
+                    <div class="border-t-2 border-b-2 border-dotted border-gray-400 py-4 mt-4">
+                        <p class="font-bold text-center {% if grace_marks_sem1 + grace_marks_sem2 > 0 %}text-yellow-800{% else %}text-green-800{% endif %}">
+                            Total Subjects with Grace Marks: {{ grace_marks_sem1 + grace_marks_sem2 }}
+                        </p>
+                    </div>
+                    <div class="p-4 bg-blue-50 text-blue-800 rounded-lg mt-4">
+                        <p class="text-sm"><strong>Note:</strong> Grace marks are extra marks given to help you pass if you're just below the passing score. For Ex: if you got 26 in the endsem but need 28 to pass, they give you 2 extra marks. It is denoted by <span class="font-bold text-yellow-800">#</span></p>
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-2xl font-semibold mb-4 text-indigo-600">3. Semester 1 Subjects</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-black">3. Semester 1 Subjects</h2>
             <div class="mb-4">
                 <p class="font-semibold">SGPA: <span class="text-indigo-600">{{ info_sem1.SGPA }}</span></p>
                 <p class="font-semibold">Credits Earned: <span class="text-green-600">{{ total_sem1_earned }} / {{ total_sem1_credits }}</span></p>
@@ -61,16 +142,29 @@
                             <th class="p-2 text-left">Grade</th>
                             <th class="p-2 text-left">Earned</th>
                             <th class="p-2 text-left">Points</th>
+                            <th class="p-2 text-left">Marks Range</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for subject in sem1_subjects %}
-                        <tr class="{% if loop.index % 2 == 0 %}bg-gray-50{% endif %} {% if subject.grade == 'F' %}text-red-600{% endif %}">
+                        <tr class="{% if loop.index % 2 == 0 %}bg-gray-50{% endif %} {% if subject.grade == 'F' %}bg-red-100{% elif '#' in subject.points %}bg-yellow-100{% endif %}">
                             <td class="p-2">{{ subject.name }}</td>
                             <td class="p-2">{{ subject.credits }}</td>
                             <td class="p-2">{{ subject.grade }} ({{ subject.grade_point }})</td>
                             <td class="p-2">{{ subject.earned }}</td>
                             <td class="p-2">{{ subject.points }}</td>
+                            <td class="p-2">
+                                {% if subject.grade == 'O' %}80-100
+                                {% elif subject.grade == 'A+' %}70-79
+                                {% elif subject.grade == 'A' %}60-69
+                                {% elif subject.grade == 'B+' %}55-59
+                                {% elif subject.grade == 'B' %}50-54
+                                {% elif subject.grade == 'C' %}45-49
+                                {% elif subject.grade == 'P' %}40-44
+                                {% elif subject.grade == 'F' %}0-39
+                                {% elif subject.grade == 'Ab' %}-
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                         <tr class="font-bold bg-indigo-100">
@@ -79,6 +173,7 @@
                             <td class="p-2"></td>
                             <td class="p-2">{{ total_sem1_earned }}</td>
                             <td class="p-2">{{ total_sem1_points }}</td>
+                            <td class="p-2"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -86,7 +181,7 @@
         </div>
 
         <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-2xl font-semibold mb-4 text-indigo-600">4. Semester 2 Subjects</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-black">4. Semester 2 Subjects</h2>
             <div class="mb-4">
                 <p class="font-semibold">SGPA: <span class="text-indigo-600">{{ info_sem2.SGPA }}</span></p>
                 <p class="font-semibold">Credits Earned: <span class="text-green-600">{{ total_sem2_earned }} / {{ info_sem2.total_cred }}</span></p>
@@ -100,16 +195,29 @@
                             <th class="p-2 text-left">Grade</th>
                             <th class="p-2 text-left">Earned</th>
                             <th class="p-2 text-left">Points</th>
+                            <th class="p-2 text-left">Marks Range</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for subject in sem2_subjects %}
-                        <tr class="{% if loop.index % 2 == 0 %}bg-gray-50{% endif %} {% if subject.grade == 'F' %}text-red-600{% endif %}">
+                        <tr class="{% if loop.index % 2 == 0 %}bg-gray-50{% endif %} {% if subject.grade == 'F' %}bg-red-100{% elif '#' in subject.points %}bg-yellow-100{% endif %}">
                             <td class="p-2">{{ subject.name }}</td>
                             <td class="p-2">{{ subject.credits }}</td>
                             <td class="p-2">{{ subject.grade }} ({{ subject.grade_point }})</td>
                             <td class="p-2">{{ subject.earned }}</td>
                             <td class="p-2">{{ subject.points }}</td>
+                            <td class="p-2">
+                                {% if subject.grade == 'O' %}80-100
+                                {% elif subject.grade == 'A+' %}70-79
+                                {% elif subject.grade == 'A' %}60-69
+                                {% elif subject.grade == 'B+' %}55-59
+                                {% elif subject.grade == 'B' %}50-54
+                                {% elif subject.grade == 'C' %}45-49
+                                {% elif subject.grade == 'P' %}40-44
+                                {% elif subject.grade == 'F' %}0-39
+                                {% elif subject.grade == 'Ab' %}-
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                         <tr class="font-bold bg-indigo-100">
@@ -118,6 +226,7 @@
                             <td class="p-2"></td>
                             <td class="p-2">{{ total_sem2_earned }}</td>
                             <td class="p-2">{{ total_sem2_points }}</td>
+                            <td class="p-2"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -125,7 +234,7 @@
         </div>
 
         <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-2xl font-semibold mb-4 text-indigo-600">5. Grading System</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-black">5. Grading System</h2>
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead>
@@ -146,6 +255,43 @@
                         <tr><td class="p-2">40-44</td><td class="p-2">P</td><td class="p-2">Pass</td><td class="p-2">4</td></tr>
                         <tr class="bg-gray-50"><td class="p-2">0-39</td><td class="p-2">F</td><td class="p-2">Fail</td><td class="p-2">0</td></tr>
                         <tr><td class="p-2">-</td><td class="p-2">Ab</td><td class="p-2">Absent</td><td class="p-2">0</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 text-black">6. CGPA and Class Awarded</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-indigo-100">
+                            <th class="p-2 text-left">Sr. No.</th>
+                            <th class="p-2 text-left">CGPA</th>
+                            <th class="p-2 text-left">Class of the Degree awarded</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="p-2">1.</td>
+                            <td class="p-2">7.75 or More than 7.75</td>
+                            <td class="p-2">First Class with Distinction</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="p-2">2.</td>
+                            <td class="p-2">6.75 or more but less than 7.75</td>
+                            <td class="p-2">First Class</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2">3.</td>
+                            <td class="p-2">6.25 or more but less than 6.75</td>
+                            <td class="p-2">Higher Second Class</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="p-2">4.</td>
+                            <td class="p-2">5.5 or more but less than 6.25</td>
+                            <td class="p-2">Second Class</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
