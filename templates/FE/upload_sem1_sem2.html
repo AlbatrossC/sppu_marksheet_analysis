@@ -144,6 +144,9 @@
                 margin-bottom: 20px;
             }
         }
+        .highlight-yellow {
+            background-color: yellow;
+        }
     </style>
 </head>
 <body>
@@ -190,6 +193,19 @@
             var fileName = e.target.files[0].name;
             document.getElementById('file-name').textContent = 'Selected: ' + fileName;
         });
+
+        // Function to highlight rows containing '$'
+        function highlightRows() {
+            var rows = document.querySelectorAll('tr');
+            rows.forEach(function(row) {
+                if (row.textContent.includes('$')) {
+                    row.classList.add('highlight-yellow');
+                }
+            });
+        }
+
+        // Call the function to highlight rows
+        highlightRows();
     </script>
 </body>
 </html>
