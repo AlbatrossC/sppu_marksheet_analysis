@@ -10,9 +10,34 @@
         body {
             font-family: 'Poppins', sans-serif;
         }
+        #unmute-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            padding: 10px;
+            background-color: rgba(79, 70, 229, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body class="bg-gray-100">
+    <audio id="background-audio" loop>
+        <source src="audio/sad bgm.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <button id="unmute-button" onclick="toggleMute()">🔊</button>
+
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-4xl font-bold text-center mb-8 text-black">Academic Performance Analysis</h1>
         
@@ -154,10 +179,56 @@
                     <div class="p-4 bg-green-50 text-green-800 rounded-lg">
                         <h3 class="font-semibold">CGPA to Percentage</h3>
                         <p>Your CGPA: {{ cgpa|round(2) }}</p>
-                        <p>Equivalent Percentage: {{ ((cgpa|round(2)) - 0.5) * 10 }}%</p>
+                        {% set grade = "" %}
+                        {% set per = 0 %}
+                        {% set cls = "" %}
+                        {% if cgpa < 4 %}
+                            {% set grade = "F" %}
+                            {% set per = "NA" %}
+                            {% set cls = "Fail" %}
+                        {% elif cgpa < 4.75 %}
+                            {% set grade = "D" %}
+                            {% set per = (6.6 * cgpa + 13.6)|round(2) %}
+                            {% set cls = "Pass" %}
+                        {% elif cgpa < 5.25 %}
+                            {% set grade = "C" %}
+                            {% set per = (10 * cgpa - 2.5)|round(2) %}
+                            {% set cls = "Pass" %}
+                        {% elif cgpa < 5.75 %}
+                            {% set grade = "B" %}
+                            {% set per = (10 * cgpa - 2.5)|round(2) %}
+                            {% set cls = "Pass" %}
+                        {% elif cgpa < 6.25 %}
+                            {% set grade = "B+" %}
+                            {% set per = (5 * cgpa + 26.5)|round(2) %}
+                            {% set cls = "Second Class" %}
+                        {% elif cgpa < 6.75 %}
+                            {% set grade = "B+" %}
+                            {% set per = (5 * cgpa + 26.5)|round(2) %}
+                            {% set cls = "Higher Second Class" %}
+                        {% elif cgpa < 7.75 %}
+                            {% set grade = "A" %}
+                            {% set per = (10 * cgpa - 7.5)|round(2) %}
+                            {% set cls = "First Class" %}
+                        {% elif cgpa < 8.25 %}
+                            {% set grade = "A" %}
+                            {% set per = (10 * cgpa - 7.5)|round(2) %}
+                            {% set cls = "First Class with Dist" %}
+                        {% elif cgpa < 9.5 %}
+                            {% set grade = "A+" %}
+                            {% set per = (12 * cgpa - 25)|round(2) %}
+                            {% set cls = "First Class with Dist" %}
+                        {% else %}
+                            {% set grade = "O" %}
+                            {% set per = (20 * cgpa - 100)|round(2) %}
+                            {% set cls = "First Class with Dist" %}
+                        {% endif %}
+                        <p>Equivalent Percentage: {% if per != "NA" %}{{ per }}%{% else %}{{ per }}{% endif %}</p>
+                        <p>Grade: {{ grade }}</p>
+                        <p>Class: {{ cls }}</p>
                     </div>
                     <div class="p-4 bg-blue-50 text-blue-800 rounded-lg mt-4">
-                        <p class="text-sm"><strong>Note:</strong> The percentage is calculated using the formula: (CGPA – 0.5) * 10.</p>
+                        <p class="text-sm"><strong>Note:</strong> The percentage is calculated using a complex formula based on CGPA ranges.</p>
                     </div>
                 </div>
             </div>
@@ -183,7 +254,7 @@
                     </thead>
                     <tbody>
                         {% for subject in sem1_subjects %}
-                        <tr class="{% if loop.index % 2 == 0 %}bg-gray-50{% endif %} {% if subject.grade == 'F' %}bg-red-100{% elif '#' in subject.points %}bg-yellow-100{% endif %}">
+                        <tr class="{% if loop.index % 2 == 0 %}bg-gray-50{% endif %} {% if subject.grade == 'F' %}bg-red-100{% elif '#' in subject.points or '$' in subject.points %}bg-yellow-100{% endif %}">
                             <td class="p-2">{{ subject.name }}</td>
                             <td class="p-2">{{ subject.credits }}</td>
                             <td class="p-2">{{ subject.grade }} ({{ subject.grade_point }})</td>
@@ -236,7 +307,7 @@
                     </thead>
                     <tbody>
                         {% for subject in sem2_subjects %}
-                        <tr class="{% if loop.index % 2 == 0 %}bg-gray-50{% endif %} {% if subject.grade == 'F' %}bg-red-100{% elif '#' in subject.points %}bg-yellow-100{% endif %}">
+                        <tr class="{% if loop.index % 2 == 0 %}bg-gray-50{% endif %} {% if subject.grade == 'F' %}bg-red-100{% elif '#' in subject.points or '$' in subject.points %}bg-yellow-100{% endif %}">
                             <td class="p-2">{{ subject.name }}</td>
                             <td class="p-2">{{ subject.credits }}</td>
                             <td class="p-2">{{ subject.grade }} ({{ subject.grade_point }})</td>
@@ -337,5 +408,33 @@
             <a href="/" class="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300">Upload Another File</a>
         </div>
     </div>
+
+    <script>
+        const audio = document.getElementById('background-audio');
+        const unmuteButton = document.getElementById('unmute-button');
+
+        // Attempt to play audio on page load
+        window.addEventListener('load', () => {
+            audio.play().then(() => {
+                console.log('Audio started playing');
+            }).catch(error => {
+                console.log('Autoplay prevented:', error);
+                // If autoplay is prevented, mute the audio and update the button
+                audio.muted = true;
+                unmuteButton.textContent = '🔇';
+            });
+        });
+
+        function toggleMute() {
+            if (audio.muted) {
+                audio.muted = false;
+                unmuteButton.textContent = '🔊';
+                audio.play();
+            } else {
+                audio.muted = true;
+                unmuteButton.textContent = '🔇';
+            }
+        }
+    </script>
 </body>
 </html>
