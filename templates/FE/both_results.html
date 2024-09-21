@@ -10,34 +10,9 @@
         body {
             font-family: 'Poppins', sans-serif;
         }
-        #unmute-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            padding: 10px;
-            background-color: rgba(79, 70, 229, 0.8);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 20px;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
     </style>
 </head>
 <body class="bg-gray-100">
-    <audio id="background-audio" loop>
-        <source src="audio/sad bgm.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-
-    <button id="unmute-button" onclick="toggleMute()">🔊</button>
-
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-4xl font-bold text-center mb-8 text-black">Academic Performance Analysis</h1>
         
@@ -408,33 +383,5 @@
             <a href="/" class="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300">Upload Another File</a>
         </div>
     </div>
-
-    <script>
-        const audio = document.getElementById('background-audio');
-        const unmuteButton = document.getElementById('unmute-button');
-
-        // Attempt to play audio on page load
-        window.addEventListener('load', () => {
-            audio.play().then(() => {
-                console.log('Audio started playing');
-            }).catch(error => {
-                console.log('Autoplay prevented:', error);
-                // If autoplay is prevented, mute the audio and update the button
-                audio.muted = true;
-                unmuteButton.textContent = '🔇';
-            });
-        });
-
-        function toggleMute() {
-            if (audio.muted) {
-                audio.muted = false;
-                unmuteButton.textContent = '🔊';
-                audio.play();
-            } else {
-                audio.muted = true;
-                unmuteButton.textContent = '🔇';
-            }
-        }
-    </script>
 </body>
 </html>
