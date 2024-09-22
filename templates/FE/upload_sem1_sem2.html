@@ -147,6 +147,58 @@
         .highlight-yellow {
             background-color: yellow;
         }
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        .tooltip {
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #3498db;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        .spinner {
+            display: none;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @media (max-width: 768px) {
+            input[type="text"], .file-input-wrapper, .button {
+                font-size: 16px;
+                padding: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -158,15 +210,26 @@
             <p class="description">
                 Enter your seat number and mother's name to fetch and process your marksheet automatically.
             </p>
-            <form action="/fe_sem1_sem2" method="POST">
-                <label for="seat_no">Seat Number:</label>
-                <input type="text" name="seat_no" id="seat_no" required>
-                <label for="mother_name">Mother's Name:</label>
-                <input type="text" name="mother_name" id="mother_name" required>
+            <form action="/fe_sem1_sem2" method="POST" id="fetchForm">
+                <div class="input-wrapper">
+                    <label for="seat_no">Seat Number:</label>
+                    <input type="text" name="seat_no" id="seat_no" required>
+                    <span class="tooltip">?
+                        <span class="tooltip-text">Enter your 8-digit seat number</span>
+                    </span>
+                </div>
+                <div class="input-wrapper">
+                    <label for="mother_name">Mother's Name:</label>
+                    <input type="text" name="mother_name" id="mother_name" required>
+                    <span class="tooltip">?
+                        <span class="tooltip-text">Enter your mother's full name as per records</span>
+                    </span>
+                </div>
                 <button type="submit" class="button">Fetch and Process</button>
             </form>
+            <div class="spinner" id="fetchSpinner"></div>
             <div class="warning">
-                <strong>Note:</strong> Due to possible slow response or high traffic on the SPPU website, fetching may not always succeed. If issues occur, please retry or use the upload option.
+                <strong>Note:</strong> Due to possible slow response or high traffic on the SPPU website, fetching may not always succeed. If issues occur, please wait a few minutes and try again, or use the upload option.
             </div>
         </div>
 
@@ -175,7 +238,7 @@
             <p class="description">
                 Upload the PDF of your FE Semester 1 & 2 combined marksheet for analysis. Ensure the file is in PDF format and valid.
             </p>
-            <form action="/fe_sem1_sem2" method="POST" enctype="multipart/form-data">
+            <form action="/fe_sem1_sem2" method="POST" enctype="multipart/form-data" id="uploadForm">
                 <div class="file-input-wrapper">
                     <button type="button" class="btn">
                         <i class="fas fa-cloud-upload-alt"></i> Choose PDF file
@@ -185,6 +248,7 @@
                 <div class="file-name" id="file-name"></div>
                 <button type="submit" class="button">Upload and Process</button>
             </form>
+            <div class="spinner" id="uploadSpinner"></div>
         </div>
     </div>
 
@@ -206,6 +270,26 @@
 
         // Call the function to highlight rows
         highlightRows();
+
+        // Show spinner and disable button on form submission
+        document.getElementById('fetchForm').addEventListener('submit', function(e) {
+            document.getElementById('fetchSpinner').style.display = 'block';
+            e.submitter.disabled = true;
+        });
+
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            document.getElementById('uploadSpinner').style.display = 'block';
+            e.submitter.disabled = true;
+        });
+
+        // Error handling for fetch failures
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            if (error === 'fetch_failed') {
+                alert('Unable to fetch data from SPPU website. Please try again later or use the upload option.');
+            }
+        });
     </script>
 </body>
 </html>
