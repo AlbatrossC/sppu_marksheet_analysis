@@ -215,8 +215,17 @@
                 <p class="font-semibold">SGPA: <span class="text-indigo-600">{{ info_sem1.SGPA }}</span></p>
                 <p class="font-semibold">Credits Earned: <span class="text-green-600">{{ total_sem1_earned }} / {{ total_sem1_credits }}</span></p>
             </div>
+            <div class="mb-4 relative">
+                <input type="text" id="searchSem1" placeholder="Search subjects..." 
+                       class="w-full p-3 pl-10 pr-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+            </div>
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="w-full" id="sem1Table">
                     <thead>
                         <tr class="bg-indigo-100">
                             <th class="p-2 text-left">Name</th>
@@ -268,8 +277,17 @@
                 <p class="font-semibold">SGPA: <span class="text-indigo-600">{{ info_sem2.SGPA }}</span></p>
                 <p class="font-semibold">Credits Earned: <span class="text-green-600">{{ total_sem2_earned }} / {{ info_sem2.total_cred }}</span></p>
             </div>
+            <div class="mb-4 relative">
+                <input type="text" id="searchSem2" placeholder="Search subjects..." 
+                       class="w-full p-3 pl-10 pr-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+            </div>
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="w-full" id="sem2Table">
                     <thead>
                         <tr class="bg-indigo-100">
                             <th class="p-2 text-left">Name</th>
@@ -383,5 +401,67 @@
             <a href="/fe_sem1_sem2" class="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300">Upload Another File</a>
         </div>
     </div>
+
+    <script>
+    function searchTable(inputId, tableId, shortForms) {
+        const input = document.getElementById(inputId);
+        const filter = input.value.toUpperCase();
+        const table = document.getElementById(tableId);
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let found = false;
+            for (let j = 0; j < cells.length; j++) {
+                const cell = cells[j];
+                if (cell) {
+                    const textValue = cell.textContent || cell.innerText;
+                    if (textValue.toUpperCase().indexOf(filter) > -1) {
+                        found = true;
+                        break;
+                    }
+                    // Check short forms
+                    for (const [fullName, shortForm] of Object.entries(shortForms)) {
+                        if (textValue.includes(fullName) && shortForm.toUpperCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) break;
+                }
+            }
+            rows[i].style.display = found ? '' : 'none';
+        }
+    }
+
+    const shortFormsSem1 = {
+        "Systems in Mechanical Engineering": "SME",
+        "Basic Electrical Engineering": "BEE",
+        "Engineering Mathematics-I": "M1",
+        "Engineering Chemistry": "CHEM",
+        "Programming and Problem Solving": "PPS",
+        "Environmental Studies-I": "EVS1"
+    };
+
+    const shortFormsSem2 = {
+        "Engineering Mechanics": "EM",
+        "Engineering Graphics": "EG",
+        "Basic Electronics Engineering": "BXE",
+        "Engineering Physics": "EP",
+        "Engineering Mathematics-II": "M2",
+        "Project Based Learning": "PBL",
+        "Environmental Studies-II": "EVS-2D",
+        "Physical Education-Exercise and Field": "PEEF",
+        "Democracy, Election and Governance": "DEG"
+    };
+
+    document.getElementById('searchSem1').addEventListener('keyup', function() {
+        searchTable('searchSem1', 'sem1Table', shortFormsSem1);
+    });
+
+    document.getElementById('searchSem2').addEventListener('keyup', function() {
+        searchTable('searchSem2', 'sem2Table', shortFormsSem2);
+    });
+    </script>
 </body>
 </html>
