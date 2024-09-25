@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 from FE.fe_sem1 import upload_file as sem1_upload
 from FE.fe_sem1_sem2 import upload_file as sem1_sem2_upload
 import logging
@@ -19,6 +19,10 @@ def run_sem1():
 def run_sem1_sem2():
     app.logger.debug('Accessing /fe_sem1_sem2 route')
     return sem1_sem2_upload()
+
+@app.route('/google10ae92d6aa340b06.html')
+def google_verification():
+    return send_from_directory('static', 'google10ae92d6aa340b06.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
