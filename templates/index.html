@@ -126,6 +126,33 @@
                 font-size: 16px;
             }
         }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--secondary-color);
+        }
+
+        .visitor-counter {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .visitor-counter img {
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
     </style>
     
     <script>
@@ -203,10 +230,17 @@
             <a id="resultLink" href="#" class="button" style="display: none;">Select the option</a>
         </div>
         
-        <!-- Add the visitor counter -->
-        <a href="https://visitcount.itsvg.in">
-            <img src="https://visitcount.itsvg.in/api?id=MarksheetAnalysis&label=Visitor%20Counter&color=6&icon=1&pretty=false" alt="Visitor Counter" />
-        </a>
+        <div class="footer">
+            <p>Check out the source code on <a href="https://github.com/AlbatrossC/sppu_marksheet_analysis" target="_blank">GitHub</a></p>
+        </div>
+        
+        <div class="visitor-counter">
+            <a href="https://visitcount.itsvg.in">
+                <img src="https://visitcount.itsvg.in/api?id=MarksheetAnalysis&label=Visitor%20Counter&color=6&icon=1&pretty=false" alt="Visitor Counter" />
+            </a>
+        </div>
+        
+        
     </div>
 </body>
 </html>
