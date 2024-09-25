@@ -24,5 +24,11 @@ def run_sem1_sem2():
 def google_verification():
     return send_from_directory('static', 'google10ae92d6aa340b06.html')
 
+
+
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory('static', 'sitemap.xml')
+
 if __name__ == '__main__':
     app.run(debug=True)
