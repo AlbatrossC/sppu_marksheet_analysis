@@ -10,6 +10,13 @@
         body {
             font-family: 'Poppins', sans-serif;
         }
+        .hover-3d {
+            transition: all 0.3s ease;
+        }
+        .hover-3d:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -17,7 +24,7 @@
         <h1 class="text-4xl font-bold text-center mb-8 text-black">Academic Performance Analysis</h1>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="bg-white rounded-lg shadow-md p-6 hover-3d">
                 <h2 class="text-2xl font-semibold mb-4 text-black">Overall Performance</h2>
                 <div class="space-y-4">
                     <div class="p-4 bg-blue-50 text-blue-800 rounded-lg">
@@ -65,7 +72,7 @@
                 </div>
             </div>
             
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="bg-white rounded-lg shadow-md p-6 hover-3d">
                 <h2 class="text-2xl font-semibold mb-4 text-black">Total Earned Credits</h2>
                 <div class="space-y-4">
                     <div class="p-4 bg-blue-50 text-blue-800 rounded-lg">
@@ -82,7 +89,7 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="bg-white rounded-lg shadow-md p-6 hover-3d">
                 <h2 class="text-2xl font-semibold mb-4 text-black">1. Backlog Status</h2>
                 <div class="space-y-4">
                     <div class="p-4 {% if backlogs_sem1 > 0 %}bg-red-50 text-red-800{% else %}bg-green-50 text-green-800{% endif %} rounded-lg">
@@ -104,7 +111,7 @@
                 </div>
             </div>
             
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="bg-white rounded-lg shadow-md p-6 hover-3d">
                 <h2 class="text-2xl font-semibold mb-4 text-black">2. Grace Marks Applied</h2>
                 <div class="space-y-4">
                     <div class="p-4 {% if grace_marks_sem1 > 0 %}bg-yellow-50 text-yellow-800{% else %}bg-green-50 text-green-800{% endif %} rounded-lg">
@@ -126,7 +133,7 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="bg-white rounded-lg shadow-md p-6 hover-3d">
                 <h2 class="text-2xl font-semibold mb-4 text-black">3. Condo Marks Applied</h2>
                 <div class="space-y-4">
                     <div class="p-4 {% if condo_marks_sem1 > 0 %}bg-yellow-50 text-yellow-800{% else %}bg-green-50 text-green-800{% endif %} rounded-lg">
@@ -148,7 +155,7 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="bg-white rounded-lg shadow-md p-6 hover-3d">
                 <h2 class="text-2xl font-semibold mb-4 text-black">4. CGPA to Percentage</h2>
                 <div class="space-y-4">
                     <div class="p-4 bg-green-50 text-green-800 rounded-lg">
@@ -209,7 +216,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8 hover-3d">
             <h2 class="text-2xl font-semibold mb-4 text-black">3. Semester 1 Subjects</h2>
             <div class="mb-4">
                 <p class="font-semibold">SGPA: <span class="text-indigo-600">{{ info_sem1.SGPA }}</span></p>
@@ -271,7 +278,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8 hover-3d">
             <h2 class="text-2xl font-semibold mb-4 text-black">4. Semester 2 Subjects</h2>
             <div class="mb-4">
                 <p class="font-semibold">SGPA: <span class="text-indigo-600">{{ info_sem2.SGPA }}</span></p>
@@ -333,7 +340,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8 hover-3d">
             <h2 class="text-2xl font-semibold mb-4 text-black">5. Grading System</h2>
             <div class="overflow-x-auto">
                 <table class="w-full">
@@ -360,7 +367,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8 hover-3d">
             <h2 class="text-2xl font-semibold mb-4 text-black">6. CGPA and Class Awarded</h2>
             <div class="overflow-x-auto">
                 <table class="w-full">
