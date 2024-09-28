@@ -3,69 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error - Unable to Fetch Marksheet</title>
+    <title>Error - Unable to Fetch Result</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
             color: #333;
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
             padding: 20px;
-            text-align: center;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
-            color: #d9534f;
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 20px;
         }
-        .error-message {
-            background-color: #f2dede;
-            border: 1px solid #ebccd1;
-            color: #a94442;
+        .error-box {
+            background-color: #f9f9f9;
+            border-left: 4px solid #e74c3c;
             padding: 15px;
             margin-bottom: 20px;
-            border-radius: 4px;
         }
-        .instruction {
-            background-color: #d9edf7;
-            border: 1px solid #bce8f1;
-            color: #31708f;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 4px;
+        .reason {
+            margin-bottom: 15px;
+        }
+        .reason h3 {
+            color: #3498db;
+            margin-bottom: 5px;
         }
         .button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #5bc0de;
+            display: block;
+            width: 200px;
+            padding: 12px 20px;
+            margin: 20px auto;
+            background-color: #3498db;
             color: white;
             text-decoration: none;
-            border-radius: 4px;
+            text-align: center;
+            border-radius: 5px;
             transition: background-color 0.3s;
+            font-weight: bold;
         }
         .button:hover {
-            background-color: #46b8da;
+            background-color: #2980b9;
+        }
+        .support-text {
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
         }
     </style>
 </head>
 <body>
-    <h1>Error: Unable to Fetch Marksheet</h1>
-    
-    <div class="error-message">
-        <p>We apologize, but we were unable to fetch your marksheet from the SPPU website. This could be due to a timeout or other connection issues.</p>
+    <div class="container">
+        <h1>Oops! We couldn't fetch your result</h1>
+        
+        <div class="error-box">
+            <p>We encountered an issue while trying to retrieve your result from the SPPU website. This could be due to one of the following reasons:</p>
+            
+            <div class="reason">
+                <h3>1. SPPU Website Issues</h3>
+                <p>SPPU's website is too slow to fetch your result right now. Try uploading the PDF directly, or check back after a short break!.</p>
+            </div>
+            
+            <div class="reason">
+                <h3>2. Incorrect Credentials</h3>
+                <p>You might have entered an incorrect seat number or mother's name. Please double-check your information.</p>
+                
+            </div>
+        </div>
+        
+        <a href="javascript:window.history.back();" class="button">Upload Again</a
+        
+        <p class="support-text">Still experiencing problems? <a href="mailto:soham_jadhav_aids@moderncoe.edu.in">Email me</a>, and I'll assist you.</p>
     </div>
-    
-    <div class="instruction">
-        <h2>What to do next:</h2>
-        <ol style="text-align: left;">
-            <li>First, try again by re-entering your credentials (seat number and mother's name). Sometimes, temporary issues can be resolved by simply retrying.</li>
-            <li>If you continue to experience issues, you can manually upload your marksheet PDF file.</li>
-        </ol>
-    </div>
-    
-    <p>
-        <a href="/" class="button">Return to Home Page</a>
-    </p>
-    
-    <p>If you continue to experience issues, please contact support for further assistance.</p>
 </body>
 </html>

@@ -30,5 +30,9 @@ def google_verification():
 def sitemap():
     return send_from_directory('static', 'sitemap.xml')
 
+@app.route('/error')
+def error():
+    return render_template('error.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
