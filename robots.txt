@@ -1,7 +1,0 @@
-User-agent: *
-Disallow: /admin
-Disallow: /login
-Disallow: /static
-Allow: /
-
-Sitemap: https://sppu-marksheet-analysis.vercel.app/sitemap.xml
