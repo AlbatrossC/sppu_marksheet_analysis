@@ -1,0 +1,105 @@
+SPPU Marksheet Analyzer Documentation
+Introduction
+
+Project Title: SPPU Marksheet Analyzer
+
+The SPPU Marksheet Analyzer helps students upload and analyze their marksheets by selecting their academic year and semester. It provides quick insights into academic performance in a simple and efficient way.
+
+
+Technical Overview
+Tech Stack
+
+    Python: Powers the backend logic and data processing for academic performance analysis.
+    HTML, CSS, JavaScript: Builds the user interface to display performance insights.
+
+Key Libraries and Their Functions
+
+    Flask==3.0.2: Routes data and serves dynamic web pages.
+    PyMuPDF==1.24.2: Extracts text and grades from uploaded PDF marksheets.
+    Werkzeug==3.0.1: Manages request/response handling and file validation.
+    requests>=2.27.0: Fetches marksheet data from external sources or APIs.
+    
+    
+  
+  
+  Understanding app.py:
+  
+  1. Imports:
+
+    Flask: Initializes the web application.
+    render_template: Renders HTML templates for views.
+    send_from_directory: Serves files from a directory (typically for static files).
+    upload_file as sem1_upload (from FE.fe_sem1): Handles file uploads for the FE Sem1 route.
+    upload_file as sem1_sem2_upload (from FE.fe_sem1_sem2): Handles file uploads for the FE Sem1-Sem2 route.
+    logging: Configures the logging system to capture debug-level messages.
+    
+  2. Flask App Setup and Execution
+
+The Flask application is initialized with the following line:
+
+app = Flask(__name__)
+
+Logging is configured at the DEBUG level to capture detailed logs during development:
+
+app.logger.setLevel(logging.DEBUG)
+
+The app is set to run in debug mode when the script is executed directly:
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+3. Route Definitions
+Home Route (/)
+
+The home route renders the main page of the application. When the user accesses the root URL, the app renders the index.html template.
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+Error Handling Route (/error)
+
+A route for rendering an error page is defined. When accessed, this route will render the error.html template, which can display a customized error message.
+
+@app.route('/error')
+def error():
+    return render_template('error.html')
+
+Creating a New Route for Home or Error:
+
+You can create routes similar to the / or /error by following this structure:
+
+@app.route('/new_route')
+def new_function():
+    return render_template('new_template.html')
+
+Ensure the route name is relevant to the functionality (e.g., /about, /contact), and that the corresponding template is in the templates/ folder.
+
+
+4. Year and Semester Specific Routes
+
+The application is designed to handle file uploads and processing for different years and semesters. Routes are defined dynamically for each combination of year and semester, such as FE_SEM1, FE_SEM1_SEM2, TE_SEM3, and TE_SEM3_SEM4.
+Example Route for Upload Handling
+
+@app.route('/<year_semester>', methods=['GET', 'POST'])
+def handle_upload(year_semester):
+    app.logger.debug(f'Accessing {year_semester} route')
+    return handle_file_upload(year_semester)
+
+How it works:
+
+    The year_semester parameter (e.g., FE_SEM1, TE_SEM3_SEM4) dynamically matches the URL route to a specific function that processes the corresponding file uploads.
+    The handle_file_upload() function is called to handle the uploaded files and any necessary processing.
+    
+    Creating a New Year-Specific Route:
+
+To create a new year/semester route, use the following structure:
+
+@app.route('/<year_semester>', methods=['GET', 'POST'])
+def handle_upload(year_semester):
+    app.logger.debug(f'Accessing {year_semester} route')
+    return handle_file_upload(year_semester)
+
+    Naming: The year_semester part (e.g., FE_SEM1, TE_SEM3_SEM4) should be descriptive and match the naming conventions used for existing routes.
+    Function: The function that processes the uploads should handle the specific logic for that year/semester combination.

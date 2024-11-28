@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPPU Marksheet Analyzer Documentation</title>
+    <style>
+        /* Basic reset and body styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        nav {
+            text-align: center;
+            background-color: #444;
+            padding: 10px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 20px;
+            padding: 10px;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            background-color: #555;
+        }
+
+        /* Styling for sections */
+        section {
+            margin: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        section h2 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        /* Dropdown content styling */
+        .dropdown-content {
+            display: none;
+            background-color: #f9f9f9;
+            min-width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .dropdown-content ul {
+            padding-left: 20px;
+        }
+
+        .dropdown-content pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Code styling */
+        code {
+            font-family: "Courier New", Courier, monospace;
+        }
+
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SPPU Marksheet Analyzer Documentation</h1>
+    </header>
+
+    <nav>
+        <a href="#introduction">Introduction</a>
+        <a href="#tech-stack">Technical Overview</a>
+        <a href="#app-py">Understanding app.py</a>
+        <a href="#routes">Route Definitions</a>
+        <a href="#year-semester">Year and Semester Specific Routes</a>
+    </nav>
+
+    <section id="introduction" class="dropdown">
+        <h2>Introduction</h2>
+        <div class="dropdown-content">
+            <p><strong>Project Title:</strong> SPPU Marksheet Analyzer</p>
+            <p>The SPPU Marksheet Analyzer helps students upload and analyze their marksheets by selecting their academic year and semester. It provides quick insights into academic performance in a simple and efficient way.</p>
+        </div>
+    </section>
+
+    <section id="tech-stack" class="dropdown">
+        <h2>Technical Overview</h2>
+        <div class="dropdown-content">
+            <h3>Tech Stack</h3>
+            <ul>
+                <li><strong>Python:</strong> Powers the backend logic and data processing for academic performance analysis.</li>
+                <li><strong>HTML, CSS, JavaScript:</strong> Builds the user interface to display performance insights.</li>
+            </ul>
+
+            <h3>Key Libraries and Their Functions</h3>
+            <ul>
+                <li><strong>Flask==3.0.2:</strong> Routes data and serves dynamic web pages.</li>
+                <li><strong>PyMuPDF==1.24.2:</strong> Extracts text and grades from uploaded PDF marksheets.</li>
+                <li><strong>Werkzeug==3.0.1:</strong> Manages request/response handling and file validation.</li>
+                <li><strong>requests>=2.27.0:</strong> Fetches marksheet data from external sources or APIs.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="app-py" class="dropdown">
+        <h2>Understanding app.py</h2>
+        <div class="dropdown-content">
+            <h3>1. Imports</h3>
+            <ul>
+                <li><strong>Flask:</strong> Initializes the web application.</li>
+                <li><strong>render_template:</strong> Renders HTML templates for views.</li>
+                <li><strong>send_from_directory:</strong> Serves files from a directory (typically for static files).</li>
+                <li><strong>upload_file as sem1_upload:</strong> Handles file uploads for the FE Sem1 route.</li>
+                <li><strong>logging:</strong> Configures the logging system to capture debug-level messages.</li>
+            </ul>
+
+            <h3>2. Flask App Setup and Execution</h3>
+            <p>The Flask application is initialized with the following line:</p>
+            <pre><code>app = Flask(__name__)</code></pre>
+            <p>Logging is configured at the DEBUG level to capture detailed logs during development:</p>
+            <pre><code>app.logger.setLevel(logging.DEBUG)</code></pre>
+            <p>The app is set to run in debug mode when the script is executed directly:</p>
+            <pre><code>
+if __name__ == '__main__':
+    app.run(debug=True)
+            </code></pre>
+        </div>
+    </section>
+
+    <section id="routes" class="dropdown">
+        <h2>Route Definitions</h2>
+        <div class="dropdown-content">
+            <h3>Home Route (/)</h3>
+            <pre><code>@app.route('/')
+def home():
+    return render_template('index.html')</code></pre>
+
+            <h3>Error Handling Route (/error)</h3>
+            <pre><code>@app.route('/error')
+def error():
+    return render_template('error.html')</code></pre>
+
+            <h3>Creating a New Route for Home or Error</h3>
+            <pre><code>@app.route('/new_route')
+def new_function():
+    return render_template('new_template.html')</code></pre>
+        </div>
+    </section>
+
+    <section id="year-semester" class="dropdown">
+        <h2>Year and Semester Specific Routes</h2>
+        <div class="dropdown-content">
+            <h3>Example Route for Upload Handling</h3>
+            <pre><code>@app.route('/&lt;year_semester&gt;', methods=['GET', 'POST'])
+def handle_upload(year_semester):
+    app.logger.debug(f'Accessing {year_semester} route')
+    return handle_file_upload(year_semester)</code></pre>
+
+            <h3>How it works:</h3>
+            <ul>
+                <li>The <code>year_semester</code> parameter (e.g., FE_SEM1, TE_SEM3_SEM4) dynamically matches the URL route to a specific function that processes the corresponding file uploads.</li>
+                <li>The <code>handle_file_upload()</code> function is called to handle the uploaded files and any necessary processing.</li>
+            </ul>
+
+            <h3>Creating a New Year-Specific Route</h3>
+            <pre><code>@app.route('/&lt;year_semester&gt;', methods=['GET', 'POST'])
+def handle_upload(year_semester):
+    app.logger.debug(f'Accessing {year_semester} route')
+    return handle_file_upload(year_semester)</code></pre>
+        </div>
+    </section>
+
+</body>
+</html>

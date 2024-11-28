@@ -12,6 +12,11 @@ logging.basicConfig(level=logging.DEBUG)
 def home():
     return render_template('index.html')
 
+#Documentation
+@app.route('/docs')
+def docs():
+    return render_template('docs.html')
+
 #FE:Sem1 page
 @app.route('/sem1', methods=['GET', 'POST'])
 def run_sem1():
