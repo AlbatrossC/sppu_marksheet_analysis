@@ -4,202 +4,267 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPPU Marksheet Analyzer Documentation</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css" rel="stylesheet" />
     <style>
-        /* Basic reset and body styling */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+        :root {
+            --primary-color: #1a73e8;
+            --background-light: #f8f9fa;
+            --text-color: #333;
+        }
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
-
-        header {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 10px;
+        body, html {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            height: 100%;
+            background-color: var(--background-light);
         }
-
-        nav {
-            text-align: center;
-            background-color: #444;
-            padding: 10px;
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
         }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 20px;
-            padding: 10px;
-            display: inline-block;
-        }
-
-        nav a:hover {
-            background-color: #555;
-        }
-
-        /* Styling for sections */
-        section {
-            margin: 20px;
+        .sidebar {
+            width: 250px;
             padding: 20px;
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
         }
-
-        section h2 {
-            color: #333;
-            margin-top: 0;
+        .sidebar h2 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 5px;
         }
-
-        /* Dropdown content styling */
-        .dropdown-content {
-            display: none;
-            background-color: #f9f9f9;
-            min-width: 100%;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .dropdown-content ul {
-            padding-left: 20px;
-        }
-
-        .dropdown-content pre {
-            background-color: #f0f0f0;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 14px;
-            overflow-x: auto;
-        }
-
-        .dropdown:hover .dropdown-content {
+        .sidebar a {
             display: block;
-        }
-
-        /* Code styling */
-        code {
-            font-family: "Courier New", Courier, monospace;
-        }
-
-        pre {
-            background-color: #f0f0f0;
-            padding: 10px;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: var(--text-color);
             border-radius: 5px;
-            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .sidebar a:hover {
+            background-color: #e6f2ff;
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+        .content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 40px;
+            background-color: white;
+        }
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary-color);
+        }
+        section {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        pre {
+            background-color: #f4f4f4;
+            border-radius: 5px;
+            padding: 15px;
+            position: relative;
             overflow-x: auto;
+            margin-bottom: 15px;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background-color 0.2s;
+        }
+        .copy-btn:hover {
+            background-color: #1558d6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+        }
+        th {
+            background-color: var(--background-light);
+            text-align: left;
+        }
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 10px;
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
-
-    <header>
-        <h1>SPPU Marksheet Analyzer Documentation</h1>
-    </header>
-
-    <nav>
-        <a href="#introduction">Introduction</a>
-        <a href="#tech-stack">Technical Overview</a>
-        <a href="#app-py">Understanding app.py</a>
-        <a href="#routes">Route Definitions</a>
-        <a href="#year-semester">Year and Semester Specific Routes</a>
-    </nav>
-
-    <section id="introduction" class="dropdown">
-        <h2>Introduction</h2>
-        <div class="dropdown-content">
-            <p><strong>Project Title:</strong> SPPU Marksheet Analyzer</p>
-            <p>The SPPU Marksheet Analyzer helps students upload and analyze their marksheets by selecting their academic year and semester. It provides quick insights into academic performance in a simple and efficient way.</p>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Documentation</h2>
+            <a href="#introduction">Project Overview</a>
+            <a href="#technical-overview">Technical Stack</a>
+            <a href="#project-structure">Project Layout</a>
+            <a href="#setup">Installation Guide</a>
+            <a href="#routes">Application Routes</a>
+            <a href="#upload">Upload Process</a>
+            <a href="#debugging">Logging Mechanism</a>
+            <a href="#extend">Extensibility</a>
         </div>
-    </section>
-
-    <section id="tech-stack" class="dropdown">
-        <h2>Technical Overview</h2>
-        <div class="dropdown-content">
-            <h3>Tech Stack</h3>
-            <ul>
-                <li><strong>Python:</strong> Powers the backend logic and data processing for academic performance analysis.</li>
-                <li><strong>HTML, CSS, JavaScript:</strong> Builds the user interface to display performance insights.</li>
-            </ul>
-
-            <h3>Key Libraries and Their Functions</h3>
-            <ul>
-                <li><strong>Flask==3.0.2:</strong> Routes data and serves dynamic web pages.</li>
-                <li><strong>PyMuPDF==1.24.2:</strong> Extracts text and grades from uploaded PDF marksheets.</li>
-                <li><strong>Werkzeug==3.0.1:</strong> Manages request/response handling and file validation.</li>
-                <li><strong>requests>=2.27.0:</strong> Fetches marksheet data from external sources or APIs.</li>
-            </ul>
+        
+        <div class="content">
+            <h1>SPPU Marksheet Analyzer Documentation</h1>
+            
+            <div class="warning">
+                <strong>Note:</strong> This documentation is for developers and system administrators working with the SPPU Marksheet Analyzer.
+            </div>
+            
+            <section id="introduction">
+                <h2>Project Overview</h2>
+                <p>A comprehensive web application designed to automate the analysis of SPPU academic marksheets, providing detailed insights into student academic performance across various semesters and years.</p>
+            </section>
+            
+            <section id="technical-overview">
+                <h2>Technical Architecture</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Technology</th>
+                            <th>Primary Function</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Backend</td>
+                            <td>Python, Flask</td>
+                            <td>Server-side processing and API routing</td>
+                        </tr>
+                        <tr>
+                            <td>PDF Processing</td>
+                            <td>PyMuPDF</td>
+                            <td>Automated marksheet text extraction</td>
+                        </tr>
+                        <tr>
+                            <td>Frontend</td>
+                            <td>HTML5, CSS3, JavaScript</td>
+                            <td>Interactive user interface</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            
+            <section id="project-structure">
+                <h2>Project Layout</h2>
+                <pre><code class="language-bash">marksheet-analyzer/
+├── app.py           # Main Flask application
+├── templates/       # HTML view templates
+├── static/          # Static resources (CSS, JS)
+└── modules/         # Processing modules
+    ├── fe/          # First Year modules
+    └── te/          # Third Year modules</code>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </pre>
+            </section>
+            
+            <section id="setup">
+                <h2>Quick Setup Guide</h2>
+                <pre><code class="language-bash">git clone https://github.com/yourusername/marksheet-analyzer
+cd marksheet-analyzer
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python app.py</code>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </pre>
+            </section>
+            
+            <section id="routes">
+                <h2>Key Application Routes</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Route</th>
+                            <th>Method</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>`/`</td>
+                            <td>GET</td>
+                            <td>Landing page</td>
+                        </tr>
+                        <tr>
+                            <td>`/upload`</td>
+                            <td>POST</td>
+                            <td>Marksheet upload endpoint</td>
+                        </tr>
+                        <tr>
+                            <td>`/analyze/<semester>`</td>
+                            <td>GET</td>
+                            <td>Performance analysis results</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            
+            <section id="upload">
+                <h2>File Upload Workflow</h2>
+                <ol>
+                    <li>User selects academic semester</li>
+                    <li>Upload PDF marksheet</li>
+                    <li>Backend validates document</li>
+                    <li>Generate performance insights</li>
+                </ol>
+            </section>
+            
+            <section id="debugging">
+                <h2>Logging Strategy</h2>
+                <ul>
+                    <li>Configured at DEBUG level</li>
+                    <li>Comprehensive error tracking</li>
+                    <li>Detailed processing logs</li>
+                </ul>
+            </section>
+            
+            <section id="extend">
+                <h2>System Extensibility</h2>
+                <p>Easily expand functionality by adding new semester-specific processing modules in the <code>modules</code> directory.</p>
+            </section>
         </div>
-    </section>
-
-    <section id="app-py" class="dropdown">
-        <h2>Understanding app.py</h2>
-        <div class="dropdown-content">
-            <h3>1. Imports</h3>
-            <ul>
-                <li><strong>Flask:</strong> Initializes the web application.</li>
-                <li><strong>render_template:</strong> Renders HTML templates for views.</li>
-                <li><strong>send_from_directory:</strong> Serves files from a directory (typically for static files).</li>
-                <li><strong>upload_file as sem1_upload:</strong> Handles file uploads for the FE Sem1 route.</li>
-                <li><strong>logging:</strong> Configures the logging system to capture debug-level messages.</li>
-            </ul>
-
-            <h3>2. Flask App Setup and Execution</h3>
-            <p>The Flask application is initialized with the following line:</p>
-            <pre><code>app = Flask(__name__)</code></pre>
-            <p>Logging is configured at the DEBUG level to capture detailed logs during development:</p>
-            <pre><code>app.logger.setLevel(logging.DEBUG)</code></pre>
-            <p>The app is set to run in debug mode when the script is executed directly:</p>
-            <pre><code>
-if __name__ == '__main__':
-    app.run(debug=True)
-            </code></pre>
-        </div>
-    </section>
-
-    <section id="routes" class="dropdown">
-        <h2>Route Definitions</h2>
-        <div class="dropdown-content">
-            <h3>Home Route (/)</h3>
-            <pre><code>@app.route('/')
-def home():
-    return render_template('index.html')</code></pre>
-
-            <h3>Error Handling Route (/error)</h3>
-            <pre><code>@app.route('/error')
-def error():
-    return render_template('error.html')</code></pre>
-
-            <h3>Creating a New Route for Home or Error</h3>
-            <pre><code>@app.route('/new_route')
-def new_function():
-    return render_template('new_template.html')</code></pre>
-        </div>
-    </section>
-
-    <section id="year-semester" class="dropdown">
-        <h2>Year and Semester Specific Routes</h2>
-        <div class="dropdown-content">
-            <h3>Example Route for Upload Handling</h3>
-            <pre><code>@app.route('/&lt;year_semester&gt;', methods=['GET', 'POST'])
-def handle_upload(year_semester):
-    app.logger.debug(f'Accessing {year_semester} route')
-    return handle_file_upload(year_semester)</code></pre>
-
-            <h3>How it works:</h3>
-            <ul>
-                <li>The <code>year_semester</code> parameter (e.g., FE_SEM1, TE_SEM3_SEM4) dynamically matches the URL route to a specific function that processes the corresponding file uploads.</li>
-                <li>The <code>handle_file_upload()</code> function is called to handle the uploaded files and any necessary processing.</li>
-            </ul>
-
-            <h3>Creating a New Year-Specific Route</h3>
-            <pre><code>@app.route('/&lt;year_semester&gt;', methods=['GET', 'POST'])
-def handle_upload(year_semester):
-    app.logger.debug(f'Accessing {year_semester} route')
-    return handle_file_upload(year_semester)</code></pre>
-        </div>
-    </section>
-
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script>
+        function copyCode(btn) {
+            const codeBlock = btn.previousElementSibling;
+            navigator.clipboard.writeText(codeBlock.textContent).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+            });
+        }
+    </script>
 </body>
 </html>
